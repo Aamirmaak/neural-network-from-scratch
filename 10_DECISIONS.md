@@ -1,0 +1,757 @@
+# 10 — Architectural Decision Log
+
+**Project:** Neural Network From Scratch  
+**Version:** 1.0  
+**Status:** Stage 2 In Progress
+
+## Overview
+
+This document records architectural decisions made during the project.
+
+**Format:** Each decision includes Context, Reasoning, Consequences, and Status.
+
+---
+
+## D01: Python as Implementation Language
+
+**Date:** Stage 0  
+**Status:** ACCEPTED
+
+### Decision
+
+Use Python as the implementation language.
+
+### Context
+
+The project requires implementing a neural-network framework from scratch. The language must support numerical computing, be widely understood, and be suitable for educational purposes.
+
+### Reasoning
+
+- Python is the industry standard for ML/AI
+- High readability supports educational goals
+- Large ecosystem for numerical computing
+- Easy to find developers who can read/extend
+- Good documentation and community support
+
+### Consequences
+
+- Access to NumPy for numerical operations
+- Python's performance limitations (acceptable for educational scope)
+- Dynamic typing (mitigated with type hints)
+- Global interpreter lock (acceptable for single-device training)
+
+---
+
+## D02: NumPy as Allowed Numerical Dependency
+
+**Date:** Stage 0  
+**Status:** ACCEPTED
+
+### Decision
+
+NumPy may be used for numerical operations in the core implementation.
+
+### Context
+
+The project needs efficient numerical operations. Implementing array operations from scratch would be excessive and not educational.
+
+### Reasoning
+
+- NumPy provides efficient array operations
+- Using NumPy for low-level operations is acceptable
+- NumPy's autodiff features are NOT used
+- Focus is on implementing learning machinery, not array operations
+
+### Consequences
+
+- Efficient numerical operations
+- Familiar API for ML practitioners
+- Clear boundary: NumPy for arrays, custom code for autodiff
+- Must not use NumPy's gradient-tracking features
+
+---
+
+## D03: Exclusion of Deep-Learning Frameworks
+
+**Date:** Stage 0  
+**Status:** ACCEPTED
+
+### Decision
+
+The core implementation must NOT use PyTorch, TensorFlow, JAX, Keras, or automatic-differentiation libraries.
+
+### Context
+
+The purpose is to implement learning machinery from first principles. Using existing frameworks would defeat this purpose.
+
+### Reasoning
+
+- Educational value requires implementing core mechanics
+- Understanding autodiff is a primary learning objective
+- Demonstrates deep understanding for portfolio
+- Enables debugging and extending from first principles
+
+### Consequences
+
+- More implementation work
+- Deeper understanding of internals
+- Clear demonstration of competence
+- Limitations in scope (acceptable)
+
+---
+
+## D04: Documentation-First Workflow
+
+**Date:** Stage 0  
+**Status:** ACCEPTED
+
+### Decision
+
+Create documentation before implementation.
+
+### Context
+
+The project needs clear requirements, design, and planning before coding begins.
+
+### Reasoning
+
+- Prevents scope creep
+- Forces clear thinking about design
+- Creates reference for implementation
+- Demonstrates engineering methodology
+
+### Consequences
+
+- More upfront work
+- Clearer implementation path
+- Better documentation
+- Easier to track progress
+
+---
+
+## D05: Modular Project Structure
+
+**Date:** Stage 0  
+**Status:** ACCEPTED
+
+### Decision
+
+Use a modular project structure with separate directories for source, tests, experiments, configs, and scripts.
+
+### Context
+
+The project needs organization that supports development, testing, and experimentation.
+
+### Reasoning
+
+- Clear separation of concerns
+- Easy to find components
+- Supports independent testing
+- Enables parallel development
+
+### Consequences
+
+- Clear file organization
+- Easy navigation
+- Standard Python project layout
+- Supports tooling (pytest, etc.)
+
+---
+
+## D06: Separation of Source, Tests, Experiments
+
+**Date:** Stage 0  
+**Status:** ACCEPTED
+
+### Decision
+
+Keep source code, tests, and experiments in separate directories.
+
+### Context
+
+Different types of code have different purposes and different dependencies.
+
+### Reasoning
+
+- Library code is reusable
+- Tests verify correctness
+- Experiments are specific investigations
+- Different dependencies (e.g., matplotlib for experiments)
+
+### Consequences
+
+- Clean library code
+- Focused test code
+- Independent experiment code
+- Clear dependency boundaries
+
+---
+
+## D07: Educational Correctness as Priority
+
+**Date:** Stage 0  
+**Status:** ACCEPTED
+
+### Decision
+
+Prioritize educational correctness and explainability over performance.
+
+### Context
+
+The project is educational, not production. Understanding is more valuable than speed.
+
+### Reasoning
+
+- Primary goal is learning
+- Code should be readable and understandable
+- Performance optimizations can obscure logic
+- Correctness is more valuable than speed
+
+### Consequences
+
+- Slower execution (acceptable)
+- Clearer code
+- Better documentation
+- Easier to extend
+
+---
+
+## D08: Staged Development
+
+**Date:** Stage 0  
+**Status:** ACCEPTED
+
+### Decision
+
+Implement in stages with validation at each stage.
+
+### Context
+
+The project is complex and needs incremental development with verification.
+
+### Reasoning
+
+- Reduces risk of large failures
+- Enables validation at each step
+- Creates clear progress markers
+- Supports debugging
+
+### Consequences
+
+- Clear milestones
+- Easier debugging
+- Better documentation
+- More predictable timeline
+
+---
+
+## D09: Value Class as Core Abstraction
+
+**Date:** Stage 0  
+**Status:** ACCEPTED
+
+### Decision
+
+Implement a Value class that wraps numerical data with gradient tracking.
+
+### Context
+
+The framework needs a numerical abstraction that supports automatic differentiation.
+
+### Reasoning
+
+- Value class is foundation for computational graph
+- Stores metadata needed for backpropagation
+- Clear and simple design
+- Matches how real frameworks work
+
+### Consequences
+
+- All operations create new Values
+- Metadata enables autodiff
+- Clear data flow
+- Easy to inspect and debug
+
+---
+
+## D10: Reverse-Mode Automatic Differentiation
+
+**Date:** Stage 0  
+**Status:** ACCEPTED
+
+### Decision
+
+Implement reverse-mode (backpropagation) rather than forward-mode autodiff.
+
+### Context
+
+The framework needs automatic differentiation for training neural networks.
+
+### Reasoning
+
+- Reverse-mode is efficient for scalar outputs (loss)
+- This is how real frameworks work
+- Educational value: understanding backpropagation
+- Standard approach in deep learning
+
+### Consequences
+
+- Efficient gradient computation
+- Requires topological ordering
+- Requires storing intermediate values
+- Standard and well-understood
+
+---
+
+## D11: Topological Ordering for Backward Pass
+
+**Date:** Stage 0  
+**Status:** ACCEPTED
+
+### Decision
+
+Use topological sorting for backward pass ordering.
+
+### Context
+
+Reverse-mode autodiff requires computing gradients in correct dependency order.
+
+### Reasoning
+
+- Ensures gradients computed in correct order
+- Required for correct chain rule application
+- Prevents using gradients before computed
+- Standard approach
+
+### Consequences
+
+- Correct gradient computation
+- Clear implementation
+- Well-understood algorithm
+- Handles complex graphs
+
+---
+
+## D12: Layers Separate from Autodiff Core
+
+**Date:** Stage 0  
+**Status:** ACCEPTED
+
+### Decision
+
+Keep layers as a separate module from the autodiff core.
+
+### Context
+
+Layers are specific to neural networks; autodiff is generic.
+
+### Reasoning
+
+- Clear separation of concerns
+- Autodiff core is reusable
+- Layers are specific implementations
+- Easier to test independently
+
+### Consequences
+
+- Clean module boundaries
+- Easier testing
+- Better organization
+- More extensible
+
+---
+
+## D13: Optimizers Independent from Models
+
+**Date:** Stage 0  
+**Status:** ACCEPTED
+
+### Decision
+
+Optimizers are separate objects that take parameters as input.
+
+### Context
+
+Different optimizers can be used with same model.
+
+### Reasoning
+
+- Clear interface
+- Different optimizers, same model
+- Matches how real frameworks work
+- Easy to swap optimizers
+
+### Consequences
+
+- Flexible optimizer selection
+- Clean interface
+- Easy experimentation
+- Standard approach
+
+---
+
+## D14: Experiments Separate from Library Code
+
+**Date:** Stage 0  
+**Status:** ACCEPTED
+
+### Decision
+
+Experiments live in a separate directory, not in the library.
+
+### Context
+
+Experiments are specific investigations; library code is reusable.
+
+### Reasoning
+
+- Library code is clean and reusable
+- Experiments may have different dependencies
+- Keeps library focused
+- Enables multiple experiments
+
+### Consequences
+
+- Clean library code
+- Independent experiments
+- Clear organization
+- Easy to add new experiments
+
+---
+
+## D15: Package Name "neuralearn"
+
+**Date:** Stage 0  
+**Status:** ACCEPTED
+
+### Decision
+
+Use "neuralearn" as the Python package name.
+
+### Context
+
+The project needs a package name for the source code.
+
+### Reasoning
+
+- Short and memorable
+- Descriptive of purpose
+- No conflicts with existing packages
+- Easy to type and pronounce
+
+### Consequences
+
+- `import neuralearn`
+- Consistent naming throughout
+- Professional appearance
+
+---
+
+## Stage 2 Decisions
+
+### D20: Division Implemented as Direct Operation
+
+**Date:** Stage 2  
+**Status:** ACCEPTED
+
+### Decision
+
+Implement division as a direct `__truediv__` operation rather than composing as `x * (y ** -1)`.
+
+### Context
+
+Division is a common operation that benefits from a dedicated backward rule rather than relying on composed power/multiplication derivatives.
+
+### Reasoning
+
+- Cleaner forward computation (single node in graph vs. two nodes)
+- More efficient backward pass (fewer gradient computations)
+- The backward rule `∂z/∂x = 1/y`, `∂z/∂y = -x/y²` is straightforward
+- Avoids the `y ** -1` power rule complexity for a simple division
+
+### Consequences
+
+- Cleaner graph structure for division operations
+- More efficient gradient computation
+- Simpler to understand and debug
+
+---
+
+### D21: Log Domain Restriction (x > 0)
+
+**Date:** Stage 2  
+**Status:** ACCEPTED
+
+### Decision
+
+Log is defined only for positive inputs (x > 0). No explicit domain check is enforced; the caller is responsible.
+
+### Context
+
+Log is undefined for x ≤ 0 (complex values or undefined). The autodiff engine operates on real numbers.
+
+### Reasoning
+
+- Matches mathematical definition of log(x)
+- No runtime domain check avoids overhead in the hot path
+- Caller's responsibility (consistent with power operation in Stage 1)
+- Documenting the domain expectation is sufficient
+
+### Consequences
+
+- Log is undefined for x ≤ 0
+- Caller must ensure valid inputs
+- Documented domain constraint
+
+---
+
+### D22: ReLU at Zero Convention (gradient = 0)
+
+**Date:** Stage 2  
+**Status:** ACCEPTED
+
+### Decision
+
+For ReLU at x = 0, define the gradient as 0.
+
+### Context
+
+ReLU is non-differentiable at x = 0. We must choose a convention for the gradient at this point.
+
+### Reasoning
+
+- Standard convention in deep learning frameworks
+- `∂ReLU/∂x = 0` at x = 0 means the gradient does not flow backward through the zero point
+- This is consistent with the "dead neuron" interpretation
+- Numerically stable and simple to implement
+
+### Consequences
+
+- ReLU gradient at x = 0 is 0
+- No special case handling needed in the backward pass
+- Standard behavior matches PyTorch/TensorFlow
+
+---
+
+### D23: Reciprocal as Convenience Operation
+
+**Date:** Stage 2  
+**Status:** ACCEPTED
+
+### Decision
+
+Implement `reciprocal()` as a convenience method (equivalent to `1 / x`).
+
+### Context
+
+Reciprocal is useful in normalization and is mathematically simple. Having a dedicated method avoids repeated `(x ** -1)` or `(1 / x)` composition.
+
+### Reasoning
+
+- Common operation in normalization
+- Simple backward rule: `∂z/∂x = -1/x²`
+- Convenience method for cleaner user code
+- Can be composed as `1 / x` but dedicated method is clearer
+
+### Consequences
+
+- Convenience method available
+- Internally uses the same backward rule as division by a constant
+
+---
+
+### D24: All New Operations in value.py
+
+**Date:** Stage 2  
+**Status:** ACCEPTED
+
+### Decision
+
+Continue implementing all new operations (division, reciprocal, exp, log, tanh, ReLU) in `value.py` rather than splitting into a separate operations module.
+
+### Context
+
+The file remains manageable (~350-400 lines expected). Splitting would add indirection without benefit at this scale.
+
+### Reasoning
+
+- Keeps related code together
+- Easy to read and understand the complete system
+- Consistent with D17 from Stage 1
+- Can be split later if the file grows too large
+
+### Consequences
+
+- Single file contains all operations
+- Easy to navigate and understand
+- May need splitting in later stages (acceptable)
+
+---
+
+## Decision Summary
+
+| ID | Decision | Status |
+|----|----------|--------|
+| D01 | Python as language | ACCEPTED |
+| D02 | NumPy as dependency | ACCEPTED |
+| D03 | Exclude DL frameworks | ACCEPTED |
+| D04 | Documentation-first | ACCEPTED |
+| D05 | Modular structure | ACCEPTED |
+| D06 | Separate source/tests/experiments | ACCEPTED |
+| D07 | Educational correctness priority | ACCEPTED |
+| D08 | Staged development | ACCEPTED |
+| D09 | Value class as core | ACCEPTED |
+| D10 | Reverse-mode autodiff | ACCEPTED |
+| D11 | Topological ordering | ACCEPTED |
+| D12 | Layers separate from core | ACCEPTED |
+| D13 | Optimizers independent | ACCEPTED |
+| D14 | Experiments separate | ACCEPTED |
+| D15 | Package name "neuralearn" | ACCEPTED |
+| D16 | Internal field naming (_prev, _op, _backward) | ACCEPTED |
+| D17 | All ops in single value.py | ACCEPTED |
+| D18 | Gradient checking in tests | ACCEPTED |
+| D19 | Repeated backward call semantics | ACCEPTED |
+| D20 | Division as direct operation | ACCEPTED |
+| D21 | Log domain restriction (x > 0) | ACCEPTED |
+| D22 | ReLU at zero convention (grad=0) | ACCEPTED |
+| D23 | Reciprocal as convenience operation | ACCEPTED |
+| D24 | All new ops in value.py | ACCEPTED |
+
+---
+
+## Future Decisions
+
+The following decisions will be made during implementation:
+
+- Specific backward function implementations
+- Gradient checking tolerance values
+- Default hyperparameters
+- Visualization library choices
+- Testing framework configuration
+- Documentation format details
+
+---
+
+## Stage 1 Decisions
+
+### D16: Internal Naming Convention for Value Fields
+
+**Date:** Stage 1  
+**Status:** ACCEPTED
+
+### Decision
+
+Use `_prev`, `_op`, `_backward` (underscore-prefixed) for internal computational graph fields on `Value`.
+
+### Context
+
+The `Value` class needs fields for parents, operation name, and backward function. These are internal implementation details, not part of the public numerical API.
+
+### Reasoning
+
+- `_prev`, `_op`, `_backward` clearly communicate these are internal
+- Public API remains clean: `data`, `grad`, `backward()`
+- Follows Python convention for internal attributes
+- Prevents accidental external modification of graph structure
+
+### Consequences
+
+- Clean public API
+- Internal graph structure is encapsulated
+- Consistent naming across implementation
+
+---
+
+### D17: All Operations in Single value.py Module
+
+**Date:** Stage 1  
+**Status:** ACCEPTED
+
+### Decision
+
+Implement the `Value` class and all Stage 1 operations (+, *, -, **, neg) in a single `value.py` module.
+
+### Context
+
+For Stage 1, the total code is small enough (~200-300 lines) to fit in one file without sacrificing readability. Splitting into separate operation files would add indirection without benefit at this scale.
+
+### Reasoning
+
+- Keeps related code together
+- Easy to read and understand the complete system
+- Operations are defined as methods on `Value` (natural grouping)
+- Can be split later if the file grows too large
+
+### Consequences
+
+- Single file to read for complete understanding
+- No import ceremony between related code
+- May need splitting in later stages (acceptable)
+
+---
+
+### D18: Numerical Gradient Checking in Tests
+
+**Date:** Stage 1  
+**Status:** ACCEPTED
+
+### Decision
+
+Implement numerical gradient checking (finite differences) directly in the test file rather than as a separate utility module.
+
+### Context
+
+Stage 1 is the first validation of correctness. A focused gradient-checking utility in the test file is sufficient. A separate `gradient_check.py` module (per the architecture) can be created in Stage 3 when the scope demands it.
+
+### Reasoning
+
+- Keeps Stage 1 scope minimal
+- Test file is self-contained for Stage 1 validation
+- Can be refactored to a utility module later
+- Avoids premature abstraction
+
+### Consequences
+
+- Stage 1 tests are self-contained
+- Gradient checking is immediately visible in test code
+- Refactoring path exists for later stages
+
+---
+
+### D19: Repeated Backward Call Semantics
+
+**Date:** Stage 1  
+**Status:** ACCEPTED
+
+### Decision
+
+Define `backward()` semantics for repeated calls: each call computes fresh gradients and **adds** them to leaf-node gradients. Intermediate (non-leaf) node gradients are reset to 0 before each traversal to prevent stale values from corrupting the current pass.
+
+### Context
+
+The initial implementation only reset `self.grad = 1.0` on the root node before traversing. Intermediate nodes retained stale gradients from previous backward calls. When `backward()` was called a second time, the stale intermediate gradients caused incorrect gradient flow — leaf gradients were wrong (e.g., 96.0 instead of the correct 64.0 for `z = (x*x)^2`).
+
+### Reasoning
+
+- **Leaf gradients accumulate:** Useful for gradient accumulation across mini-batches or repeated loss evaluations.
+- **Intermediate gradients are fresh:** Each backward pass computes the full chain rule from scratch. Stale intermediate values would corrupt the computation.
+- **Root gradient is always 1.0:** `d(output)/d(output) = 1` by definition; it does not accumulate.
+- This matches the mathematical model: each `backward()` call adds the gradient `∇f(x)` to the existing leaf gradients.
+
+### Implementation
+
+```python
+# Before traversal:
+for node in topo_order:
+    if node is self:         node.grad = 1.0   # root
+    elif len(node._prev) > 0: node.grad = 0.0   # intermediate (non-leaf)
+    # else: leaf — untouched (accumulate)
+```
+
+### Consequences
+
+- Repeated `backward()` calls on graphs with intermediate nodes produce mathematically correct accumulated leaf gradients.
+- Existing tests (leaf-only graphs) continue to pass unchanged.
+- No explicit `zero_grad()` method is needed for the core Value class (will be added in later stages for training).
+
+---
