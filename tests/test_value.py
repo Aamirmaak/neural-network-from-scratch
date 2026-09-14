@@ -1389,10 +1389,16 @@ class TestStage2ScalarInteroperability:
         assert c.data == pytest.approx(2.0)
 
     def test_exp_of_scalar_value(self):
-        """exp() is a method, not a binary op — no interop needed."""
+        """exp() is a method — verify it works on Value."""
+        a = Value(2.0)
+        c = a.exp()
+        assert c.data == pytest.approx(math.exp(2.0))
 
     def test_log_of_scalar_value(self):
-        """log() is a method, not a binary op — no interop needed."""
+        """log() is a method — verify it works on Value."""
+        a = Value(5.0)
+        c = a.log()
+        assert c.data == pytest.approx(math.log(5.0))
 
 
 # ===========================================================================

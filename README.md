@@ -1,6 +1,6 @@
 # Project 001 — Neural Network From Scratch
 
-**Status:** Stage 1 Complete — Awaiting Architect Review
+**Status:** Stage 2 In Progress
 
 ## Overview
 
@@ -8,7 +8,7 @@ An educational deep-learning framework built from first principles to demonstrat
 
 This project implements a small but complete neural-network training system without using any existing deep-learning frameworks or automatic-differentiation libraries. The goal is to build strong AI/ML engineering fundamentals through real implementation work.
 
-**Current State:** Stage 1 is implemented and tested (87 tests passing). Scalar `Value` class with reverse-mode autodiff is functional. Awaiting architect review before proceeding to Stage 2.
+**Current State:** Stage 2 is implemented and tested (152 tests passing). Scalar `Value` class with division, exp, log, tanh, ReLU operations added. Proceeding to Stage 3.
 
 ## Problem / Motivation
 
@@ -48,7 +48,7 @@ The completed project will be a small deep-learning framework supporting:
 |-----------|--------|-------------|
 | Value (scalar) | IMPLEMENTED | Scalar numerical abstraction with gradient tracking |
 | Autodiff (basic) | IMPLEMENTED | Reverse-mode autodiff: +, *, neg, -, ** |
-| Autodiff (extended) | PLANNED | Division, exp, log, tanh, ReLU |
+| Autodiff (extended) | IMPLEMENTED | Division, exp, log, tanh, ReLU, reciprocal |
 | Parameters | PLANNED | Trainable model parameters |
 | Layers | PLANNED | Linear, ReLU, Tanh layers |
 | Losses | PLANNED | MSE, Binary Cross-Entropy |
@@ -163,14 +163,14 @@ neural-network-from-scratch/
 
 ## Current Milestone
 
-**Stage 1 — Core Value / Computational Graph** (Complete, awaiting review)
+**Stage 2 — Extended Autodiff Operations** (Complete)
 
-Stage 1 implements a scalar `Value` class with:
-- Forward operations: `+`, `*`, `-x`, `-`, `**`
-- Reverse-mode autodiff with topological sorting
-- Gradient accumulation for branching graphs
-- Correct repeated-backward semantics (D19)
-- 87 passing tests including numerical gradient checks
+Stage 2 extends the scalar `Value` class with:
+- Forward operations: `/`, `reciprocal()`, `exp()`, `log()`, `tanh()`, `relu()`
+- Reverse-mode autodiff backward rules for all new operations
+- Numerical gradient verification for all new operations
+- ReLU at zero convention: gradient = 0
+- 152 passing tests including Stage 2 numerical gradient checks
 
 ## Future Roadmap
 

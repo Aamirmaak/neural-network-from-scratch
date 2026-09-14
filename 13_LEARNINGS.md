@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 1 Complete — Awaiting Architect Review
+**Status:** Stage 2 In Progress
 
 ## Overview
 
@@ -263,6 +263,70 @@ The following are high-level learning objectives for the project. Specific learn
 
 ---
 
+### Division Backward and the Quotient Rule
+
+**Date:** 2026-09-15  
+**Stage:** 2  
+**Related Code:** `src/neuralearn/value.py` (__truediv__)
+
+#### Initial Understanding
+
+I initially thought division could be composed as `x * (y ** -1)`, leveraging the existing multiplication and power operations.
+
+#### What Was Implemented
+
+A direct `__truediv__` operation with its own backward rule:
+- `∂(x/y)/∂x = 1/y`
+- `∂(x/y)/∂y = -x/y²`
+
+#### What Was Observed
+
+The direct implementation produces a cleaner graph (one division node vs. a power + multiplication node) and simpler gradient computation.
+
+#### What Was Learned
+
+The quotient rule is the natural backward rule for division. Composing as `x * y**-1` would work but adds unnecessary graph nodes and makes debugging harder. The direct implementation is both more efficient and more educational.
+
+#### Mathematical Insight
+
+For `z = x/y`:
+- `∂z/∂x = 1/y` (numerator gradient)
+- `∂z/∂y = -x/y²` (denominator gradient, negative because larger denominator → smaller result)
+
+#### Engineering Insight
+
+Sometimes the "composed" approach (building from existing primitives) is less efficient and less clear than a dedicated implementation. The trade-off is code size vs. clarity and performance.
+
+---
+
+### Non-Smooth Functions: ReLU at Zero
+
+**Date:** 2026-09-15  
+**Stage:** 2  
+**Related Code:** `src/neuralearn/value.py` (relu)
+
+#### Initial Understanding
+
+ReLU is `max(0, x)`, which is differentiable everywhere except at x=0.
+
+#### What Was Implemented
+
+ReLU with gradient=0 at x=0 (standard deep learning convention).
+
+#### What Was Observed
+
+The convention works correctly in all tests, including repeated backward calls.
+
+#### What Was Learned
+
+Non-smooth functions require an explicit convention at the non-differentiable point. The choice (gradient=0 vs gradient=1 vs gradient=0.5) affects training behavior but all are valid subgradient choices. Gradient=0 is standard because it means "don't update" at the boundary.
+
+#### Mathematical Insight
+
+ReLU is not differentiable at x=0 in the classical sense, but it has subgradients. The subdifferential at x=0 is [0, 1]. Choosing 0 is the most conservative choice — it means the neuron doesn't update when exactly at zero.
+
+---
+
 ## Learning Entry Template (Detailed)
 
 ```markdown
@@ -365,11 +429,11 @@ The following are high-level learning objectives for the project. Specific learn
 
 | Category | Entries | Last Updated |
 |----------|---------|--------------|
-| Mathematical | 2 | 2026-09-15 |
+| Mathematical | 3 | 2026-09-15 |
 | Implementation | 2 | 2026-09-15 |
 | ML | 0 | - |
-| Engineering | 1 | 2026-09-15 |
-| **Total** | **5** | 2026-09-15 |
+| Engineering | 2 | 2026-09-15 |
+| **Total** | **7** | 2026-09-15 |
 
 ---
 

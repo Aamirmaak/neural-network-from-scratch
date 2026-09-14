@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 1 Complete — Awaiting Architect Review
+**Status:** Stage 2 In Progress
 
 ## Overview
 
@@ -163,13 +163,72 @@ This document tracks progress through the project stages.
 
 ---
 
+## Entry 003
+
+**Date:** 2026-09-15  
+**Stage:** Stage 2 — Extended Autodiff Operations
+
+### Work Completed
+
+- Extended `src/neuralearn/value.py` (~405 lines total)
+  - Added `import math` for exp/log/tanh
+  - Added `__truediv__` and `__rtruediv__` — division with backward rule
+  - Added `exp()` — exponential with backward rule
+  - Added `log()` — natural log with backward rule (domain: x > 0)
+  - Added `tanh()` — hyperbolic tangent with backward rule
+  - Added `relu()` — rectified linear unit with backward rule (grad=0 at x=0)
+  - Added `reciprocal()` — convenience method for 1/x
+- Added 65 new tests to `tests/test_value.py` (152 total):
+  - Division: 9 tests (6 forward, 3 backward)
+  - Reciprocal: 5 tests (3 forward, 2 backward)
+  - Exp: 6 tests (4 forward, 2 backward)
+  - Log: 7 tests (4 forward, 3 backward)
+  - Tanh: 7 tests (4 forward, 3 backward)
+  - ReLU: 9 tests (4 forward, 5 backward)
+  - Numerical gradient checks: 9 tests (single ops, chains, mixed Stage 1+2)
+  - Scalar interoperability: 4 tests
+  - Chained expressions: 4 tests
+  - Repeated backward: 5 tests
+- All 152 tests pass (87 Stage 1 + 65 Stage 2)
+- Manual mathematical validation passed for all operations
+- Scope audit: no forbidden operations (layers, losses, optimizers, training) leaked in
+- Updated documentation: 03, 04, 10 (decisions D20-D24)
+
+### Implementation Decisions
+
+- D20: Division as direct operation (not composed as x * y**-1)
+- D21: Log domain restricted to x > 0 (no explicit check, caller's responsibility)
+- D22: ReLU at zero convention — gradient = 0 (standard in deep learning)
+- D23: Reciprocal as convenience method (backward: -1/x²)
+- D24: All new operations in value.py (single file, consistent with D17)
+
+### Actual Learning
+
+- Division backward uses the quotient rule: ∂(x/y)/∂x = 1/y, ∂(x/y)/∂y = -x/y²
+- The `numerical_grad` helper takes a no-arg callable and perturbs the Value's data directly — tests must use closures capturing Value objects
+- ReLU's non-smoothness at x=0 requires an explicit convention; gradient=0 is standard
+- `exp(log(x)) = x` is a useful identity for testing — gradient should be 1
+- Tanh backward: `∂tanh/∂x = 1 - tanh(x)²` — simple but requires caching the forward value
+
+### Problems
+
+- Initial reciprocal tests failed because `reciprocal()` method was not added to Value class
+- Numerical gradient tests initially used `fn(a)` calling convention instead of no-arg closures
+
+### Next Step
+
+- Stage 2 implementation complete, pending acceptance
+- Next authorized stage: Stage 3 — Gradient Checking
+
+---
+
 ## Stage Progress
 
 | Stage | Status | Start Date | End Date |
 |-------|--------|------------|----------|
 | Stage 0 | COMPLETE | 2026-09-15 | 2026-09-15 |
-| Stage 1 | COMPLETE (awaiting review) | 2026-09-15 | 2026-09-15 |
-| Stage 2 | NOT STARTED | - | - |
+| Stage 1 | COMPLETE (approved) | 2026-09-15 | 2026-09-15 |
+| Stage 2 | IN PROGRESS | 2026-09-15 | 2026-09-15 |
 | Stage 3 | NOT STARTED | - | - |
 | Stage 4 | NOT STARTED | - | - |
 | Stage 5 | NOT STARTED | - | - |
@@ -189,10 +248,10 @@ This document tracks progress through the project stages.
 
 | Metric | Value |
 |--------|-------|
-| Current Stage | 1 |
+| Current Stage | 2 |
 | Documentation Files | 15 |
 | Source Files | 2 |
 | Test Files | 1 |
 | Experiment Files | 0 |
-| Total Tests | 87 |
-| Tests Passed | 87 |
+| Total Tests | 152 |
+| Tests Passed | 152 |
