@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 3 COMPLETE, Stage 4 IN PROGRESS
+**Status:** Stage 5 IN PROGRESS
 
 ## Overview
 
@@ -762,6 +762,97 @@ Activation functions need to participate in the Module hierarchy for composition
 
 ---
 
+## Stage 5 Decisions
+
+### D31: Loss Functions as Plain Functions
+
+**Date:** Stage 5  
+**Status:** ACCEPTED
+
+### Decision
+
+Loss functions are implemented as plain functions (`mse_loss`, `binary_cross_entropy`), not as Module subclasses.
+
+### Context
+
+Loss functions compute a scalar from predictions and targets. Unlike layers, they have no trainable parameters, no state to manage, and no need for `zero_grad()`.
+
+### Reasoning
+
+- No parameters means `parameters()` would return `[]` — Module adds no value
+- No state means no `zero_grad()` needed
+- Plain functions are simpler, more Pythonic, and easier to understand
+- Consistent with functional programming style for pure computations
+- Matches the mathematical notation: `L = f(ŷ, y)`
+
+### Consequences
+
+- Loss functions are stateless callables
+- No Module inheritance overhead
+- Gradient flow works naturally through Value operations inside the function
+- Simpler API: `loss = mse_loss(predictions, targets)`
+
+---
+
+### D32: BCE Probability Clipping via ReLU
+
+**Date:** Stage 5  
+**Status:** ACCEPTED
+
+### Decision
+
+BCE clips predictions to `[eps, 1-eps]` using existing Value operations:
+`clipped = eps + (p - eps).relu() - (p - (1-eps)).relu()`
+
+### Context
+
+BCE requires `log(p)` and `log(1-p)`, which are undefined for `p <= 0` and `p >= 1`. Predictions from a neural network can be any real number.
+
+### Reasoning
+
+- Uses existing `relu()` operation — no new Value methods needed
+- Clipping is differentiable everywhere except exact boundary points
+- Boundary gradients are 0 (matching ReLU convention at 0)
+- For typical predictions away from 0 and 1, gradients flow correctly
+- Default `eps=1e-7` provides sufficient numerical stability
+
+### Consequences
+
+- BCE works with any real-valued prediction
+- log(0) is prevented by clipping
+- Gradient is 0 at exact boundaries (non-issue in practice)
+- No need for epsilon-based gradient smoothing
+
+---
+
+### D33: Mean Reduction for Both Losses
+
+**Date:** Stage 5  
+**Status:** ACCEPTED
+
+### Decision
+
+Both MSE and BCE use mean reduction (average over samples), not sum reduction.
+
+### Context
+
+Loss functions must reduce multiple per-sample losses to a single scalar. The choice between mean and sum affects the learning rate scale.
+
+### Reasoning
+
+- Mean reduction makes the loss scale-independent of batch size
+- Consistent with PyTorch's default (`reduction='mean'`)
+- More intuitive: "average error per sample"
+- Easier to compare across different batch sizes
+
+### Consequences
+
+- Loss gradient is scaled by `1/n`
+- Learning rate is independent of batch size
+- Consistent with standard deep-learning practice
+
+---
+
 ## Decision Summary
 
 | ID | Decision | Status |
@@ -796,6 +887,9 @@ Activation functions need to participate in the Module hierarchy for composition
 | D28 | Module as lightweight base class | ACCEPTED |
 | D29 | Linear uses direct weight/bias | ACCEPTED |
 | D30 | ReLU/Tanh as Module wrappers | ACCEPTED |
+| D31 | Loss functions as plain functions | ACCEPTED |
+| D32 | BCE clips via relu() | ACCEPTED |
+| D33 | Mean reduction for both losses | ACCEPTED |
 
 ---
 

@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 4 IN PROGRESS
+**Status:** Stage 5 IN PROGRESS
 
 ## Overview
 
@@ -387,6 +387,78 @@ ReLU is not differentiable at x=0 in the classical sense, but it has subgradient
 
 ---
 
+### Loss Functions as Functions vs Modules
+
+**Date:** 2026-09-15  
+**Stage:** 5  
+**Related Code:** `src/neuralearn/losses.py`
+
+#### Initial Understanding
+
+I initially considered making loss functions Module subclasses, consistent with layers.
+
+#### What Was Implemented
+
+Plain functions: `mse_loss(predictions, targets)` and `binary_cross_entropy(predictions, targets)`.
+
+#### What Was Learned
+
+Loss functions are fundamentally different from layers:
+1. They have no trainable parameters — `parameters()` would return `[]`
+2. They have no state — no need for `zero_grad()`
+3. They are pure computations: input → scalar output
+4. Plain functions are simpler, more Pythonic, and easier to test
+
+The key insight: Module adds value when you need parameter discovery and gradient management. Loss functions need neither.
+
+#### Mathematical Insight
+
+MSE gradient: `dMSE/dŷ_i = 2(ŷ_i - y_i) / n` — simple, always defined.
+BCE gradient: `dBCE/dp_i = (1/n) * [-y_i/p_i + (1-y_i)/(1-p_i)]` — requires 0 < p < 1.
+
+#### Engineering Insight
+
+When designing APIs, ask: "Does this entity need the abstraction's features?" If not, use the simpler form. Functions for stateless computations, classes for stateful ones.
+
+---
+
+### BCE Numerical Stability Through Clipping
+
+**Date:** 2026-09-15  
+**Stage:** 5  
+**Related Code:** `src/neuralearn/losses.py` (binary_cross_entropy)
+
+#### Initial Understanding
+
+I initially thought BCE required special-case handling for p=0 and p=1 (if/else branches).
+
+#### What Was Implemented
+
+Clipping using existing relu(): `clipped = eps + (p - eps).relu() - (p - (1-eps)).relu()`
+
+#### What Was Learned
+
+Composing clipping from existing differentiable operations is better than if/else:
+1. No Python branching in the computational graph
+2. Clipping is itself differentiable (gradient 0 at boundaries, 1 in between)
+3. Uses existing Value operations — no new backward rules needed
+4. The non-differentiability at exact boundaries is handled by the same convention as ReLU (gradient = 0)
+
+#### Mathematical Insight
+
+The clipping formula `eps + max(0, p-eps) - max(0, p-(1-eps))` implements:
+- p < eps: output = eps (gradient = 0)
+- eps <= p <= 1-eps: output = p (gradient = 1)
+- p > 1-eps: output = 1-eps (gradient = 0)
+
+This is the subgradient of the projection onto [eps, 1-eps].
+
+#### Engineering Insight
+
+Reusing existing differentiable operations (like relu) to build new differentiable operations is powerful. It avoids implementing new backward rules and ensures consistency with the existing gradient-checking infrastructure.
+
+---
+
 ## Learning Categories
 
 ### Mathematical Concepts
@@ -548,11 +620,11 @@ The simplicity means: when someone reads `class Linear(Module)`, they immediatel
 
 | Category | Entries | Last Updated |
 |----------|---------|--------------|
-| Mathematical | 4 | 2026-09-15 |
-| Implementation | 3 | 2026-09-15 |
-| ML | 0 | - |
-| Engineering | 4 | 2026-09-15 |
-| **Total** | **11** | 2026-09-15 |
+| Mathematical | 5 | 2026-09-15 |
+| Implementation | 4 | 2026-09-15 |
+| ML | 1 | 2026-09-15 |
+| Engineering | 5 | 2026-09-15 |
+| **Total** | **15** | 2026-09-15 |
 
 ---
 

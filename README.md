@@ -1,6 +1,6 @@
 # Project 001 — Neural Network From Scratch
 
-**Status:** Stage 4 In Progress
+**Status:** Stage 5 In Progress
 
 ## Overview
 
@@ -8,7 +8,7 @@ An educational deep-learning framework built from first principles to demonstrat
 
 This project implements a small but complete neural-network training system without using any existing deep-learning frameworks or automatic-differentiation libraries. The goal is to build strong AI/ML engineering fundamentals through real implementation work.
 
-**Current State:** Stage 4 parameters and layers implemented. Parameter, Module, Neuron, Linear, ReLU, Tanh. 252 tests passing. Proceeding to architect review.
+**Current State:** Stage 5 loss functions implemented. MSE and BCE with gradient checking. 310 tests passing. Proceeding to architect review.
 
 ## Problem / Motivation
 
@@ -49,9 +49,9 @@ The completed project will be a small deep-learning framework supporting:
 | Value (scalar) | IMPLEMENTED | Scalar numerical abstraction with gradient tracking |
 | Autodiff (basic) | IMPLEMENTED | Reverse-mode autodiff: +, *, neg, -, ** |
 | Autodiff (extended) | IMPLEMENTED | Division, exp, log, tanh, ReLU, reciprocal |
-| Parameters | PLANNED | Trainable model parameters |
-| Layers | PLANNED | Linear, ReLU, Tanh layers |
-| Losses | PLANNED | MSE, Binary Cross-Entropy |
+| Parameters | IMPLEMENTED | Trainable model parameters |
+| Layers | IMPLEMENTED | Linear, ReLU, Tanh layers |
+| Losses | IMPLEMENTED | MSE, Binary Cross-Entropy |
 | Optimizers | PLANNED | SGD, Momentum, Adam |
 | Training Loop | PLANNED | Forward, backward, update cycle |
 | Experiments | PLANNED | XOR, regression, controlled comparisons |
@@ -142,7 +142,8 @@ neural-network-from-scratch/
 │       ├── value.py
 │       ├── gradient_check.py
 │       ├── parameter.py
-│       └── layers.py
+│       ├── layers.py
+│       └── losses.py
 ├── tests/
 ├── experiments/
 ├── configs/
@@ -166,16 +167,14 @@ neural-network-from-scratch/
 
 ## Current Milestone
 
-**Stage 4 — Parameters & Layers**
+**Stage 5 — Loss Functions**
 
-Stage 4 builds neural-network abstractions on top of the autodiff engine:
-- `Parameter` — trainable scalar (subclasses Value)
-- `Module` — base class for layers (forward, parameters, zero_grad)
-- `Neuron` — single neuron (weighted sum + bias)
-- `Linear` — fully-connected layer (nin → nout)
-- `ReLU`, `Tanh` — activation layers
-- Gradient-checking validation of layer gradients
-- 252 passing tests (195 existing + 57 new)
+Stage 5 implements differentiable loss functions:
+- `mse_loss` — Mean Squared Error with mean reduction
+- `binary_cross_entropy` — Binary Cross-Entropy with probability clipping
+- Gradient checking for all losses
+- Composition with Linear layers (Linear → MSE → backward)
+- 310 passing tests (252 existing + 58 new)
 
 ## Future Roadmap
 

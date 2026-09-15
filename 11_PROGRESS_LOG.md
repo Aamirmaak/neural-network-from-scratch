@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 4 IN PROGRESS
+**Status:** Stage 5 IN PROGRESS
 
 ## Overview
 
@@ -319,8 +319,8 @@ This document tracks progress through the project stages.
 | Stage 1 | COMPLETE (approved) | 2026-09-15 | 2026-09-15 |
 | Stage 2 | COMPLETE (approved) | 2026-09-15 | 2026-09-15 |
 | Stage 3 | COMPLETE (approved) | 2026-09-15 | 2026-09-15 |
-| Stage 4 | IN PROGRESS | 2026-09-15 | 2026-09-15 |
-| Stage 5 | NOT STARTED | - | - |
+| Stage 4 | COMPLETE (approved) | 2026-09-15 | 2026-09-15 |
+| Stage 5 | IN PROGRESS | 2026-09-15 | - |
 | Stage 6 | NOT STARTED | - | - |
 | Stage 7 | NOT STARTED | - | - |
 | Stage 8 | NOT STARTED | - | - |
@@ -337,10 +337,10 @@ This document tracks progress through the project stages.
 
 | Metric | Value |
 |--------|-------|
-| Current Stage | 4 |
+| Current Stage | 5 |
 | Documentation Files | 15 |
-| Source Files | 5 |
-| Test Files | 4 |
+| Source Files | 6 |
+| Test Files | 5 |
 | Experiment Files | 0 |
-| Total Tests | 252 |
-| Tests Passed | 252 |
+| Total Tests | 310 |
+| Tests Passed | 310 |

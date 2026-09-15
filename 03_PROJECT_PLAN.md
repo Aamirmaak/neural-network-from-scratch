@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 4 IN PROGRESS
+**Status:** Stage 5 IN PROGRESS
 
 ## Overview
 
@@ -17,7 +17,7 @@ Stage 0  — Project Definition & Documentation     ✓ COMPLETE
 Stage 1  — Core Value / Computational Graph       ✓ COMPLETE
 Stage 2  — Extended Autodiff Operations          ✓ COMPLETE
 Stage 3  — Gradient Checking                    ✓ COMPLETE
-Stage 4  — Parameters and Layers
+Stage 4  — Parameters and Layers            ✓ COMPLETE
 Stage 5  — Loss Functions
 Stage 6  — Optimizers
 Stage 7  — Training Infrastructure
@@ -235,8 +235,8 @@ Stage 3 remains **scalar-only** — no tensors, layers, losses, optimizers, or t
 
 ## Stage 4 — Parameters and Layers
 
-**Status:** IN PROGRESS  
-**Dependencies:** Stage 2
+**Status:** COMPLETE  
+**Dependencies:** Stage 4
 
 ### Objective
 
@@ -259,18 +259,18 @@ Implement trainable parameters and neural-network layers.
 
 ### Acceptance Criteria
 
-- [ ] Parameter subclasses Value; IS-A Value, participates in computational graph
-- [ ] Parameter has `requires_grad` flag (default True)
-- [ ] Parameter has `zero_grad()` method to reset `.grad` to 0.0
-- [ ] Module is a lightweight base class (not abstract)
-- [ ] Module provides `forward()`, `parameters()`, `zero_grad()`
-- [ ] Neuron computes weighted sum + bias correctly
-- [ ] Linear layer computes y = Wx + b correctly
-- [ ] Linear parameters count is nout * (nin + 1)
-- [ ] ReLU layer wraps existing Value.relu()
-- [ ] Tanh layer wraps existing Value.tanh()
-- [ ] All parameters are discoverable via Module.parameters()
-- [ ] Unit tests pass for all layers
+- [x] Parameter subclasses Value; IS-A Value, participates in computational graph
+- [x] Parameter has `requires_grad` flag (default True)
+- [x] Parameter has `zero_grad()` method to reset `.grad` to 0.0
+- [x] Module is a lightweight base class (not abstract)
+- [x] Module provides `forward()`, `parameters()`, `zero_grad()`
+- [x] Neuron computes weighted sum + bias correctly
+- [x] Linear layer computes y = Wx + b correctly
+- [x] Linear parameters count is nout * (nin + 1)
+- [x] ReLU layer wraps existing Value.relu()
+- [x] Tanh layer wraps existing Value.tanh()
+- [x] All parameters are discoverable via Module.parameters()
+- [x] Unit tests pass for all layers
 
 ### Expected Artifacts
 
@@ -283,8 +283,8 @@ Implement trainable parameters and neural-network layers.
 
 ## Stage 5 — Loss Functions
 
-**Status:** PLANNED  
-**Dependencies:** Stage 2
+**Status:** IN PROGRESS  
+**Dependencies:** Stage 4
 
 ### Objective
 

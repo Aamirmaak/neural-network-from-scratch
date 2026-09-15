@@ -2,13 +2,13 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 4 IN PROGRESS
+**Status:** Stage 5 IN PROGRESS
 
 ## Overview
 
 This document describes the architecture of the neural-network framework. The architecture is designed for educational clarity, correctness, and modularity.
 
-**Current State:** Stage 3 gradient-checking module implemented and validated. Reusable `gradient_check.py` with numerical gradient verification. 195 tests passing. Layers, losses, optimizers, and training are planned but not yet implemented.
+**Current State:** Stage 5 loss functions implemented and validated. MSE and BCE loss functions with gradient checking. 310 tests passing. Optimizers and training planned but not yet implemented.
 
 ## Conceptual Architecture
 
@@ -242,13 +242,20 @@ class ReLU(Module):
 - Define forward pass
 - Collect parameters
 
-### Loss
+### Loss (Stage 5 — Implemented)
 
 **Purpose:** Measure how far predictions are from targets.
 
+**Design Decision (D31):** Loss functions are plain functions, not Module subclasses. They have no trainable parameters, no state, and no need for zero_grad().
+
 **Responsibilities:**
 - Compute scalar loss from predictions and targets
-- Enable gradient computation
+- Enable gradient computation back to predictions
+- Mean reduction (average over samples)
+
+**Implemented Losses:**
+- `mse_loss(predictions, targets)` — Mean Squared Error
+- `binary_cross_entropy(predictions, targets)` — Binary Cross-Entropy with probability clipping
 
 ### Optimizer
 
@@ -389,7 +396,6 @@ neuralearn/
 ├── parameter.py         # Trainable parameters
 ├── layers.py            # Linear, ReLU, Tanh, Sequential
 ├── losses.py            # MSE, Binary Cross-Entropy
-├── optimizers.py        # SGD, Momentum, Adam
 ├── training.py          # Training loop
 └── visualization.py     # Plotting and visualization
 ```

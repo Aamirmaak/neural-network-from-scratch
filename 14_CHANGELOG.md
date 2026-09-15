@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 4 IN PROGRESS
+**Status:** Stage 5 IN PROGRESS
 
 ## Overview
 
@@ -16,16 +16,19 @@ This document records changes to the project.
 
 ### Added
 
+- Stage 5: Loss functions:
+  - `src/neuralearn/losses.py` — mse_loss, binary_cross_entropy
+  - `tests/test_losses.py` — 58 loss tests including gradient checking
 - Stage 4: Parameters and layers:
   - `src/neuralearn/parameter.py` — Parameter class (subclasses Value, zero_grad, requires_grad)
   - `src/neuralearn/layers.py` — Module, Neuron, Linear, ReLU, Tanh
   - `tests/test_parameter.py` — 15 parameter tests
   - `tests/test_layers.py` — 42 layer tests including gradient checking
-- Updated 4 documentation files (03, 04, 07, 10)
+- Updated documentation files (03, 04, 07, 10)
 
 ### Changed
 
-- Version bumped from 0.4.0 to 0.5.0
+- Version bumped from 0.5.0 to 0.6.0
 
 ### Deprecated
 
@@ -59,6 +62,7 @@ This document records changes to the project.
 
 | Version | Date | Stage | Description |
 |---------|------|-------|-------------|
+| 0.6.0 | 2026-09-15 | 5 | MSE, BCE losses, 58 tests, D31-D33 |
 | 0.5.0 | 2026-09-15 | 4 | Parameter, Module, Neuron, Linear, ReLU, Tanh, 57 tests, D27-D30 |
 | 0.4.0 | 2026-09-15 | 3 | Gradient checking module: numerical_grad, gradient_check, 43 tests, D25-D26 |
 | 0.3.0 | 2026-09-15 | 2 | Extended ops: div, reciprocal, exp, log, tanh, relu, 152 tests, D20-D24 |
