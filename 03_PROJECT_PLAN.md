@@ -2,13 +2,13 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 6 IN PROGRESS
+**Status:** Stage 9 COMPLETE
 
 ## Overview
 
 This document defines the staged implementation roadmap for the project. Each stage has clear objectives, acceptance criteria, and dependencies.
 
-**Current Stage:** Stage 3 — Gradient Checking (complete, pending git checkpoint)
+**Current Stage:** Stage 9 — End-to-End Experiments (complete)
 
 ## Stage Overview
 
@@ -21,8 +21,8 @@ Stage 4  — Parameters and Layers            ✓ COMPLETE
 Stage 5  — Loss Functions                    ✓ COMPLETE
 Stage 6  — Optimizers                      ✓ COMPLETE
 Stage 7  — Training Engine                  ✓ COMPLETE
-Stage 8  — Dataset & DataLoader
-Stage 9  — Nonlinear Regression
+Stage 8  — Dataset & DataLoader             ✓ COMPLETE
+Stage 9  — End-to-End Experiments           ✓ COMPLETE
 Stage 10 — Controlled Experiments
 Stage 11 — Visualization and Evaluation
 Stage 12 — Packaging

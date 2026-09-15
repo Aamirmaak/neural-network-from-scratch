@@ -1256,6 +1256,37 @@ The project convention is one major abstraction per module (value.py, parameter.
 
 ---
 
+## Stage 9 Decisions
+
+### D48: Sigmoid as Module Wrapper
+
+**Date:** Stage 9  
+**Status:** ACCEPTED
+
+#### Decision
+
+Implement Sigmoid as a Module subclass that wraps the existing Value.sigmoid() operation, consistent with D30 (ReLU/Tanh as Module wrappers).
+
+#### Context
+
+Stage 9 experiments require sigmoid activation for binary classification (XOR with BCE loss). Sigmoid was not previously implemented.
+
+#### Reasoning
+
+- Consistent with D30: activation layers are thin wrappers over Value operations
+- No code duplication: delegates to existing Value.sigmoid()
+- Sigmoid gradient is σ(x)(1-σ(x)), which is numerically stable
+- Enables the standard pattern: Linear → Sigmoid → BCE
+
+#### Consequences
+
+- Sigmoid layer added to layers.py
+- Value.sigmoid() added to value.py
+- 8 new tests in test_layers.py
+- Experiments can use the standard classification pipeline
+
+---
+
 ## Decision Summary
 
 | ID | Decision | Status |
@@ -1307,6 +1338,7 @@ The project convention is one major abstraction per module (value.py, parameter.
 | D45 | Per-sample training within batches (D39 preserved) | ACCEPTED |
 | D46 | Deterministic shuffling via explicit seed | ACCEPTED |
 | D47 | Dataset/DataLoader in separate modules | ACCEPTED |
+| D48 | Sigmoid as Module wrapper (consistent with D30) | ACCEPTED |
 
 ---
 

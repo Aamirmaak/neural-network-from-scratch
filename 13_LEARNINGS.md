@@ -779,9 +779,9 @@ The simplicity means: when someone reads `class Linear(Module)`, they immediatel
 |----------|---------|--------------|
 | Mathematical | 6 | 2026-09-15 |
 | Implementation | 5 | 2026-09-15 |
-| ML | 2 | 2026-09-15 |
-| Engineering | 6 | 2026-09-15 |
-| **Total** | **19** | 2026-09-15 |
+| ML | 3 | 2026-09-16 |
+| Engineering | 9 | 2026-09-16 |
+| **Total** | **23** | 2026-09-16 |
 
 ---
 

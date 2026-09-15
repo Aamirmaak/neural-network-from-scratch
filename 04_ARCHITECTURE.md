@@ -2,13 +2,13 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 8 IN PROGRESS
+**Status:** Stage 9 COMPLETE
 
 ## Overview
 
 This document describes the architecture of the neural-network framework. The architecture is designed for educational clarity, correctness, and modularity.
 
-**Current State:** Stage 8 Dataset & DataLoader implemented. Dataset for paired storage, DataLoader with batching/shuffling/seed/drop_last. Trainer accepts DataLoader. 394+ tests passing.
+**Current State:** Stage 9 End-to-End Experiments complete. XOR classification and nonlinear regression experiments validated. Sigmoid activation layer added. 465 tests passing.
 
 ## Conceptual Architecture
 

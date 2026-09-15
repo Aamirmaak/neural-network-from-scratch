@@ -17,7 +17,7 @@ import pytest
 
 from neuralearn.value import Value
 from neuralearn.parameter import Parameter
-from neuralearn.layers import Module, Neuron, Linear, ReLU, Tanh
+from neuralearn.layers import Module, Neuron, Linear, ReLU, Tanh, Sigmoid
 from neuralearn.gradient_check import numerical_grad, gradient_check
 
 
@@ -311,6 +311,72 @@ class TestTanhLayer:
         out.backward()
         expected = 1.0 - math.tanh(0.5) ** 2
         assert x.grad == pytest.approx(expected)
+
+
+# ---------------------------------------------------------------------------
+# 4b. Sigmoid layer
+# ---------------------------------------------------------------------------
+
+class TestSigmoidLayer:
+    def test_zero(self):
+        act = Sigmoid()
+        out = act(Value(0.0))
+        assert out.data == pytest.approx(0.5)
+
+    def test_positive(self):
+        act = Sigmoid()
+        out = act(Value(2.0))
+        expected = 1.0 / (1.0 + math.exp(-2.0))
+        assert out.data == pytest.approx(expected)
+
+    def test_negative(self):
+        act = Sigmoid()
+        out = act(Value(-3.0))
+        expected = 1.0 / (1.0 + math.exp(3.0))
+        assert out.data == pytest.approx(expected)
+
+    def test_gradient(self):
+        act = Sigmoid()
+        x = Value(1.0)
+        out = act(x)
+        out.backward()
+        s = 1.0 / (1.0 + math.exp(-1.0))
+        expected = s * (1.0 - s)
+        assert x.grad == pytest.approx(expected)
+
+    def test_gradient_zero(self):
+        act = Sigmoid()
+        x = Value(0.0)
+        out = act(x)
+        out.backward()
+        expected = 0.25  # 0.5 * (1 - 0.5)
+        assert x.grad == pytest.approx(expected)
+
+    def test_gradient_negative(self):
+        act = Sigmoid()
+        x = Value(-2.0)
+        out = act(x)
+        out.backward()
+        s = 1.0 / (1.0 + math.exp(2.0))
+        expected = s * (1.0 - s)
+        assert x.grad == pytest.approx(expected)
+
+    def test_repr(self):
+        act = Sigmoid()
+        assert "Sigmoid" in repr(act)
+
+    def test_numerical_gradient(self):
+        """Sigmoid gradient matches central-difference approximation."""
+        act = Sigmoid()
+        x = Value(0.7)
+        out = act(x)
+        out.backward()
+        analytical = x.grad
+        eps = 1e-5
+        f_plus = 1.0 / (1.0 + math.exp(-(0.7 + eps)))
+        f_minus = 1.0 / (1.0 + math.exp(-(0.7 - eps)))
+        numerical = (f_plus - f_minus) / (2 * eps)
+        assert analytical == pytest.approx(numerical, abs=1e-4)
 
 
 # ---------------------------------------------------------------------------

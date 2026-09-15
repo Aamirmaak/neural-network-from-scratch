@@ -1,6 +1,6 @@
 # Project 001 — Neural Network From Scratch
 
-**Status:** Stage 8 In Progress
+**Status:** Stage 9 Complete
 
 ## Overview
 
@@ -8,7 +8,7 @@ An educational deep-learning framework built from first principles to demonstrat
 
 This project implements a small but complete neural-network training system without using any existing deep-learning frameworks or automatic-differentiation libraries. The goal is to build strong AI/ML engineering fundamentals through real implementation work.
 
-**Current State:** Stage 8 Dataset & DataLoader implemented. Dataset for paired storage, DataLoader with batching/shuffling/seed/drop_last. Trainer accepts DataLoader. 457 tests passing.
+**Current State:** Stage 9 End-to-End Experiments complete. XOR classification and nonlinear regression experiments demonstrate the framework works. Sigmoid activation layer added. 465 tests passing.
 
 ## Problem / Motivation
 
@@ -56,7 +56,8 @@ The completed project will be a small deep-learning framework supporting:
 | Training Engine | IMPLEMENTED | Trainer with fit/evaluate lifecycle |
 | Dataset | IMPLEMENTED | Paired input/target storage with validation |
 | DataLoader | IMPLEMENTED | Batching, shuffling, seed, drop_last |
-| Experiments | PLANNED | XOR, regression, controlled comparisons |
+| Sigmoid | IMPLEMENTED | Sigmoid activation layer |
+| Experiments | IMPLEMENTED | XOR classification, nonlinear regression |
 | Visualization | PLANNED | Training curves, decision boundaries |
 
 ## Architecture Overview
@@ -89,8 +90,8 @@ See [04_ARCHITECTURE.md](04_ARCHITECTURE.md) for detailed architecture.
 
 | Experiment | Objective | Status |
 |------------|-----------|--------|
-| XOR Classification | Learn nonlinear decision boundary | PLANNED |
-| Nonlinear Regression | Fit complex function | PLANNED |
+| XOR Classification | Learn nonlinear decision boundary | COMPLETE |
+| Nonlinear Regression | Fit complex function | COMPLETE |
 | Optimizer Comparison | SGD vs Momentum vs Adam | PLANNED |
 | Learning Rate Study | Effect on convergence | PLANNED |
 | Architecture Search | Hidden size, depth, activation | PLANNED |
@@ -173,14 +174,13 @@ neural-network-from-scratch/
 
 ## Current Milestone
 
-**Stage 8 — Dataset & DataLoader**
+**Stage 9 — End-to-End Experiments**
 
-Stage 8 implements data loading infrastructure:
-- `Dataset` — paired input/target storage with validation
-- `DataLoader` — batching, shuffling, deterministic seed, drop_last
-- Trainer integration — `fit()` accepts DataLoader or direct lists
-- Per-sample training within batches preserved
-- 457 passing tests (394 existing + 63 new)
+Stage 9 validates the framework with real experiments:
+- Experiment A: XOR classification — MLP (100%) vs linear (75%)
+- Experiment B: Nonlinear regression — MLP (MSE 0.038) vs linear (MSE 0.268)
+- Sigmoid activation layer added for classification experiments
+- 465 passing tests (457 existing + 8 new Sigmoid tests)
 
 ## Future Roadmap
 

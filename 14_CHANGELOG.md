@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 8 IN PROGRESS
+**Status:** Stage 9 COMPLETE
 
 ## Overview
 
@@ -16,6 +16,12 @@ This document records changes to the project.
 
 ### Added
 
+- Stage 9: End-to-End Experiments:
+  - `experiments/experiment_a_xor.py` — XOR classification experiment (linear vs MLP)
+  - `experiments/experiment_b_regression.py` — Nonlinear regression experiment (linear vs MLP)
+  - `src/neuralearn/layers.py` — Sigmoid activation layer (Module wrapper)
+  - `src/neuralearn/value.py` — Value.sigmoid() method
+  - `tests/test_layers.py` — 8 new Sigmoid tests (forward, gradient, numerical check)
 - Stage 8: Dataset & DataLoader:
   - `src/neuralearn/datasets.py` — Dataset class for paired input/target storage
   - `src/neuralearn/dataloaders.py` — DataLoader class with batching, shuffling, seed, drop_last
@@ -40,7 +46,7 @@ This document records changes to the project.
 
 ### Changed
 
-- Version bumped from 0.8.0 to 0.9.0
+- Version bumped from 0.9.0 to 1.0.0
 
 ### Deprecated
 
@@ -74,6 +80,7 @@ This document records changes to the project.
 
 | Version | Date | Stage | Description |
 |---------|------|-------|-------------|
+| 1.0.0 | 2026-09-16 | 9 | End-to-end experiments (XOR, regression), Sigmoid layer, 465 tests, D48 |
 | 0.9.0 | 2026-09-16 | 8 | Dataset, DataLoader, batching/shuffling/seed, Trainer integration, 63 tests, D43-D47 |
 | 0.8.0 | 2026-09-16 | 7 | Trainer class with fit/evaluate, per-sample lifecycle, history, 40 tests, D38-D42 |
 | 0.7.0 | 2026-09-15 | 6 | SGD, MomentumSGD, Adam optimizers, 44 tests, D34-D37 |

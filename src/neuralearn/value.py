@@ -297,6 +297,29 @@ class Value:
         out._backward = _backward
         return out
 
+    def sigmoid(self) -> Value:
+        """z = sigmoid(x) = 1 / (1 + exp(-x))
+
+        Local derivative:
+            dz/dx = sigmoid(x) * (1 - sigmoid(x))
+
+        Backward rule:
+            dx += dout * sigmoid(x) * (1 - sigmoid(x))
+        """
+        s = 1.0 / (1.0 + math.exp(-self.data))
+        out = Value(
+            s,
+            _prev={self},
+            _op="sigmoid",
+        )
+
+        def _backward() -> None:
+            # dz/dx = s * (1 - s)
+            self.grad += out.grad * s * (1.0 - s)
+
+        out._backward = _backward
+        return out
+
     def relu(self) -> Value:
         """z = max(0, x)  (Rectified Linear Unit)
 

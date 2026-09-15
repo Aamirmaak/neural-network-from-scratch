@@ -256,3 +256,30 @@ class Tanh(Module):
 
     def __repr__(self) -> str:
         return "Tanh()"
+
+
+class Sigmoid(Module):
+    """Sigmoid activation layer: applies sigmoid(x) = 1/(1+exp(-x)) element-wise.
+
+    Wraps the existing Value.sigmoid() operation.
+    No new mathematics is introduced.
+
+    Example:
+        act = Sigmoid()
+        y = act(Value(0.0))  # y = 0.5
+        y = act(Value(2.0))  # y ≈ 0.881
+    """
+
+    def forward(self, x: Value) -> Value:
+        """Apply sigmoid activation.
+
+        Args:
+            x: Input Value.
+
+        Returns:
+            sigmoid(x) as a Value.
+        """
+        return x.sigmoid()
+
+    def __repr__(self) -> str:
+        return "Sigmoid()"
