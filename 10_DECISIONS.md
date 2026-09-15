@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 2 In Progress
+**Status:** Stage 3 COMPLETE
 
 ## Overview
 
@@ -588,6 +588,63 @@ The file remains manageable (~350-400 lines expected). Splitting would add indir
 
 ---
 
+## Stage 3 Decisions
+
+### D25: Gradient Checking as Separate Module
+
+**Date:** Stage 3  
+**Status:** ACCEPTED
+
+### Decision
+
+Create `src/neuralearn/gradient_check.py` as a reusable module rather than keeping gradient-checking logic only in test files.
+
+### Context
+
+Numerical gradient checking is a validation tool, not a test-specific utility. It should be importable and reusable across test files and potentially in experiment validation.
+
+### Reasoning
+
+- The architecture planned `gradient_check.py` as a separate module
+- Reusable across test files and future experiment validation
+- Separates the checking logic from specific test cases
+- Follows the project's modular structure principle (D05)
+
+### Consequences
+
+- Gradient-checking logic is reusable
+- Test files import from the module
+- Clear separation of utility vs. test
+
+---
+
+### D26: Epsilon and Tolerance Selection
+
+**Date:** Stage 3  
+**Status:** ACCEPTED
+
+### Decision
+
+Use ε=1e-5 for central difference and atol=1e-5, rtol=1e-3 for gradient comparison.
+
+### Context
+
+Central-difference finite differences have O(ε²) truncation error. Too large an ε loses accuracy; too small amplifies floating-point roundoff.
+
+### Reasoning
+
+- ε=1e-5: balances truncation error (~1e-10) against roundoff error (~1e-16 / 1e-5 ≈ 1e-11)
+- atol=1e-5: catches absolute gradient errors larger than the finite-difference approximation error
+- rtol=1e-3: allows 0.1% relative error, which is appropriate for floating-point comparisons
+- These values are standard in autodiff gradient-checking literature
+
+### Consequences
+
+- Consistent gradient checking across all operations
+- Meaningful error thresholds that catch real bugs without false positives
+
+---
+
 ## Decision Summary
 
 | ID | Decision | Status |
@@ -616,6 +673,8 @@ The file remains manageable (~350-400 lines expected). Splitting would add indir
 | D22 | ReLU at zero convention (grad=0) | ACCEPTED |
 | D23 | Reciprocal as convenience operation | ACCEPTED |
 | D24 | All new ops in value.py | ACCEPTED |
+| D25 | Gradient checking as separate module | ACCEPTED |
+| D26 | Epsilon=1e-5, atol=1e-5, rtol=1e-3 | ACCEPTED |
 
 ---
 

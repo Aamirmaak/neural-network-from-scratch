@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 2 In Progress
+**Status:** Stage 3 COMPLETE
 
 ## Overview
 
@@ -425,15 +425,86 @@ ReLU is not differentiable at x=0 in the classical sense, but it has subgradient
 
 ---
 
+### Central-Difference Finite Differences for Gradient Checking
+
+**Date:** 2026-09-15  
+**Stage:** 3  
+**Related Code:** `src/neuralearn/gradient_check.py`
+
+#### Initial Understanding
+
+I initially thought any finite-difference method would work for gradient checking. I considered forward difference: `(f(x+ε) - f(x)) / ε`.
+
+#### What Was Implemented
+
+Central difference: `[f(x+ε) - f(x-ε)] / (2ε)` with ε=1e-5.
+
+#### What Was Observed
+
+Central difference produces accurate numerical gradients that closely match analytical gradients for all smooth operations. The error is typically < 1e-7.
+
+#### What Was Learned
+
+Central difference has O(ε²) truncation error, compared to O(ε) for forward difference. This means it's significantly more accurate for the same ε. The trade-off is two function evaluations instead of one, which is acceptable for gradient checking (not a hot path).
+
+For ε=1e-5:
+- Truncation error: O(ε²) ≈ 1e-10
+- Roundoff error: O(machine_epsilon/ε) ≈ 1e-11
+- Total error: dominated by whichever is larger, both are small
+
+#### Mathematical Insight
+
+Forward difference: `f'(x) ≈ (f(x+h) - f(x)) / h` has error `O(h)` from the Taylor expansion remainder.
+Central difference: `f'(x) ≈ (f(x+h) - f(x-h)) / (2h)` has error `O(h²)` because the first-order terms cancel.
+
+#### Engineering Insight
+
+The ε selection is a balance: too large loses accuracy, too small amplifies floating-point roundoff. ε=1e-5 is standard in the autodiff literature and works well for float64.
+
+---
+
+### Gradient Checking Independence from Autodiff
+
+**Date:** 2026-09-15  
+**Stage:** 3  
+**Related Code:** `src/neuralearn/gradient_check.py`
+
+#### Initial Understanding
+
+I initially considered having the gradient checker call `backward()` internally to compute analytical gradients automatically.
+
+#### What Was Implemented
+
+The `gradient_check` function reads existing `.grad` values (computed by the caller) and computes numerical gradients independently. It does NOT call `backward()`.
+
+#### What Was Observed
+
+This design keeps the numerical and analytical computations conceptually independent. The caller controls when `backward()` is called.
+
+#### What Was Learned
+
+If the gradient checker called `backward()` internally, it would:
+1. Couple the checking logic to the Value API
+2. Risk modifying gradients that the caller wants to preserve
+3. Make it impossible to check gradients after custom gradient manipulation
+
+Reading existing `.grad` values is cleaner and more composable.
+
+#### Engineering Insight
+
+Separation of concerns: the gradient checker validates gradients; the autodiff engine computes them. The checker should not perform the computation it's trying to validate.
+
+---
+
 ## Progress Tracking
 
 | Category | Entries | Last Updated |
 |----------|---------|--------------|
-| Mathematical | 3 | 2026-09-15 |
-| Implementation | 2 | 2026-09-15 |
+| Mathematical | 4 | 2026-09-15 |
+| Implementation | 3 | 2026-09-15 |
 | ML | 0 | - |
-| Engineering | 2 | 2026-09-15 |
-| **Total** | **7** | 2026-09-15 |
+| Engineering | 3 | 2026-09-15 |
+| **Total** | **10** | 2026-09-15 |
 
 ---
 

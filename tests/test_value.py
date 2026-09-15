@@ -18,30 +18,12 @@ import math
 import pytest
 
 from neuralearn.value import Value
+from neuralearn.gradient_check import numerical_grad
 
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
-
-def numerical_grad(fn, x_val, eps=1e-5):
-    """Compute numerical gradient of fn with respect to a scalar input.
-
-    Uses central difference: (f(x+eps) - f(x-eps)) / (2*eps).
-    fn must be a callable that returns a float when called.
-    x_val is the Value whose .data is perturbed.
-    """
-    original = x_val.data
-
-    x_val.data = original + eps
-    forward = fn()
-
-    x_val.data = original - eps
-    backward = fn()
-
-    x_val.data = original  # restore
-    return (forward - backward) / (2.0 * eps)
-
 
 def assert_close(a, b, tol=1e-6, msg=""):
     """Assert two floats are close, with a useful error message."""

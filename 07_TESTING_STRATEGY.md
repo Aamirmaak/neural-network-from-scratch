@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 2 In Progress
+**Status:** Stage 3 COMPLETE
 
 ## Overview
 
@@ -107,16 +107,16 @@ This document defines the testing strategy for ensuring correctness of the neura
 
 ```
 tests/
-├── test_value.py           # Value class tests
-├── test_operations.py      # Arithmetic operation tests
-├── test_autodiff.py        # Autodiff tests
-├── test_gradient_check.py  # Gradient checking tests
-├── test_parameter.py       # Parameter tests
-├── test_layers.py          # Layer tests
-├── test_losses.py          # Loss function tests
-├── test_optimizers.py      # Optimizer tests
-├── test_training.py        # Training loop tests
-└── test_integration.py     # Integration tests
+├── test_value.py           # Value class tests (Stages 1 & 2)
+├── test_gradient_check.py  # Gradient-checking tests (Stage 3)
+├── test_operations.py      # Arithmetic operation tests (PLANNED)
+├── test_autodiff.py        # Autodiff tests (PLANNED)
+├── test_parameter.py       # Parameter tests (PLANNED)
+├── test_layers.py          # Layer tests (PLANNED)
+├── test_losses.py          # Loss function tests (PLANNED)
+├── test_optimizers.py      # Optimizer tests (PLANNED)
+├── test_training.py        # Training loop tests (PLANNED)
+└── test_integration.py     # Integration tests (PLANNED)
 ```
 
 ### Test Cases
@@ -233,44 +233,41 @@ Forward: (f(θ + ε) - f(θ)) / ε
 Central: (f(θ + ε) - f(θ - ε)) / (2ε)
 ```
 
-### Implementation (PLANNED PSEUDOCODE)
-
-> **Note:** The following is planned pseudocode showing the intended implementation approach. This function does not exist yet. It will be implemented in Stage 3.
+### Implementation (Stage 3 — Implemented)
 
 ```python
-# PLANNED PSEUDOCODE — This function does not exist yet
-def gradient_check(function, param, epsilon=1e-5):
-    """
-    Check gradient of function with respect to param.
-    
-    Args:
-        function: Function to check
-        param: Parameter to check gradient for
-        epsilon: Perturbation size
-    
-    Returns:
-        relative_error: Relative error between analytical and numerical gradient
-    """
-    # Compute analytical gradient
-    analytical = param.grad
-    
-    # Compute numerical gradient
-    original = param.data
-    
-    param.data = original + epsilon
-    forward = function()
-    
-    param.data = original - epsilon
-    backward = function()
-    
-    param.data = original
-    
-    numerical = (forward - backward) / (2 * epsilon)
-    
-    # Compute relative error
-    relative_error = abs(analytical - numerical) / (abs(analytical) + abs(numerical) + 1e-8)
-    
-    return relative_error
+# src/neuralearn/gradient_check.py
+def numerical_grad(fn, x_val, eps=1e-5):
+    """Compute numerical gradient via central difference."""
+    original = x_val.data
+    x_val.data = original + eps
+    forward = fn()
+    x_val.data = original - eps
+    backward = fn()
+    x_val.data = original
+    return (forward - backward) / (2.0 * eps)
+
+def gradient_check(fn, values, eps=1e-5, atol=1e-5, rtol=1e-3):
+    """Check analytical vs numerical gradients for multiple Values."""
+    results = []
+    for val in values:
+        analytical = val.grad
+        original = val.data
+        val.data = original + eps
+        forward = fn()
+        val.data = original - eps
+        backward = fn()
+        val.data = original
+        numerical = (forward - backward) / (2.0 * eps)
+        abs_error = abs(analytical - numerical)
+        denom = max(abs(analytical), abs(numerical), 1e-12)
+        rel_error = abs_error / denom
+        passed = (abs_error < atol) or (rel_error < rtol)
+        results.append({
+            'value': val, 'analytical': analytical, 'numerical': numerical,
+            'abs_error': abs_error, 'rel_error': rel_error, 'passed': passed,
+        })
+    return results
 ```
 
 ### Tolerance

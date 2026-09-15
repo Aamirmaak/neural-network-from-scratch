@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 2 In Progress
+**Status:** Stage 3 COMPLETE
 
 ## Overview
 
@@ -16,31 +16,20 @@ This document records changes to the project.
 
 ### Added
 
-- Stage 2: Extended autodiff operations in `src/neuralearn/value.py`:
-  - Division (`__truediv__`, `__rtruediv__`) with quotient rule backward
-  - Reciprocal (`reciprocal()`) with -1/x² backward
-  - Exponential (`exp()`) with exp(x) backward
-  - Natural logarithm (`log()`) with 1/x backward (domain: x > 0)
-  - Hyperbolic tangent (`tanh()`) with (1-tanh²) backward
-  - ReLU (`relu()`) with gradient=0 at x=0 convention
-  - `import math` for exp/log/tanh
-- 65 new tests for Stage 2 operations (152 total):
-  - Division, reciprocal, exp, log, tanh, relu: forward and backward
-  - Numerical gradient checks for all new operations
-  - Scalar interoperability for division
-  - Chained expressions mixing Stage 1 and Stage 2 operations
-  - Repeated backward with new operations (D19 semantics)
-- Updated documentation:
-  - `03_PROJECT_PLAN.md` — Stage 2 defined, current stage updated
-  - `04_ARCHITECTURE.md` — Stage 2 operations table with derivatives
-  - `10_DECISIONS.md` — D20-D24 (division, log domain, ReLU at zero, reciprocal, single file)
-  - `11_PROGRESS_LOG.md` — Entry 003 (Stage 2 work, 152 tests)
-  - `13_LEARNINGS.md` — 2 new learning entries (quotient rule, ReLU at zero)
-  - `14_CHANGELOG.md` — This entry
+- Stage 3: Gradient-checking subsystem:
+  - `src/neuralearn/gradient_check.py` — reusable module with `numerical_grad` and `gradient_check` functions
+  - `tests/test_gradient_check.py` — 43 comprehensive gradient-checking tests
+  - Central-difference finite-difference approximation (ε=1e-5)
+  - Multi-value gradient comparison with absolute and relative tolerance
+  - Tests covering all individual operations, composed graphs, multi-input, deep graphs
+  - Numerical edge case documentation (ReLU at zero, near-zero division, saturated tanh)
+  - Regression tests for D19 compatibility and incorrect gradient detection
+- Updated `tests/test_value.py` to import `numerical_grad` from gradient_check module
+- Updated 6 documentation files (03, 07, 10, 11, 13, 14)
 
 ### Changed
 
-- Version bumped from 0.2.0 to 0.3.0
+- Version bumped from 0.3.0 to 0.4.0
 
 ### Deprecated
 
@@ -74,6 +63,7 @@ This document records changes to the project.
 
 | Version | Date | Stage | Description |
 |---------|------|-------|-------------|
+| 0.4.0 | 2026-09-15 | 3 | Gradient checking module: numerical_grad, gradient_check, 43 tests, D25-D26 |
 | 0.3.0 | 2026-09-15 | 2 | Extended ops: div, reciprocal, exp, log, tanh, relu, 152 tests, D20-D24 |
 | 0.2.0 | 2026-09-15 | 1 | Value class, forward ops, backward propagation, 87 tests, D19 backward fix |
 | 0.1.0 | 2026-09-15 | 0 | Initial documentation and scaffolding |
@@ -95,11 +85,12 @@ This document records changes to the project.
 
 As the project progresses, changes will be recorded here.
 
-### Stage 3 (Planned)
+### Stage 4 (Planned)
 
-- Gradient checking as separate utility module
-- Additional gradient verification
+- Trainable parameters
+- Linear, ReLU, Tanh layers
+- Sequential container
 
-### Stages 4-14 (Planned)
+### Stages 5-14 (Planned)
 
 - See 03_PROJECT_PLAN.md for full roadmap

@@ -5,7 +5,7 @@ This package provides an educational implementation of a deep learning framework
 demonstrating the fundamental machinery behind neural-network training.
 """
 
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 
 from neuralearn.value import Value
 

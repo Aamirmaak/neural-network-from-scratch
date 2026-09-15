@@ -1,6 +1,6 @@
 # Project 001 — Neural Network From Scratch
 
-**Status:** Stage 2 In Progress
+**Status:** Stage 3 COMPLETE
 
 ## Overview
 
@@ -8,7 +8,7 @@ An educational deep-learning framework built from first principles to demonstrat
 
 This project implements a small but complete neural-network training system without using any existing deep-learning frameworks or automatic-differentiation libraries. The goal is to build strong AI/ML engineering fundamentals through real implementation work.
 
-**Current State:** Stage 2 is implemented and tested (152 tests passing). Scalar `Value` class with division, exp, log, tanh, ReLU operations added. Proceeding to Stage 3.
+**Current State:** Stage 3 gradient-checking module implemented and validated. Reusable `gradient_check.py` with numerical gradient verification. 195 tests passing. Ready for git checkpoint.
 
 ## Problem / Motivation
 
@@ -139,7 +139,8 @@ neural-network-from-scratch/
 ├── src/
 │   └── neuralearn/
 │       ├── __init__.py
-│       └── value.py
+│       ├── value.py
+│       └── gradient_check.py
 ├── tests/
 ├── experiments/
 ├── configs/
@@ -163,14 +164,14 @@ neural-network-from-scratch/
 
 ## Current Milestone
 
-**Stage 2 — Extended Autodiff Operations** (Complete)
+**Stage 3 — Gradient Checking**
 
-Stage 2 extends the scalar `Value` class with:
-- Forward operations: `/`, `reciprocal()`, `exp()`, `log()`, `tanh()`, `relu()`
-- Reverse-mode autodiff backward rules for all new operations
-- Numerical gradient verification for all new operations
-- ReLU at zero convention: gradient = 0
-- 152 passing tests including Stage 2 numerical gradient checks
+Stage 3 validates the autodiff engine with numerical gradient checking:
+- Reusable `gradient_check.py` module with `numerical_grad` and `gradient_check`
+- Central-difference finite-difference approximation (ε=1e-5)
+- Gradient comparison with absolute and relative tolerance
+- Tests covering individual operations, composed graphs, multi-input, deep graphs
+- 195 passing tests (152 existing + 43 new)
 
 ## Future Roadmap
 

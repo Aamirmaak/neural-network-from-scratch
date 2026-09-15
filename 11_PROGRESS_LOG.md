@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 2 In Progress
+**Status:** Stage 3 COMPLETE
 
 ## Overview
 
@@ -222,14 +222,62 @@ This document tracks progress through the project stages.
 
 ---
 
+## Entry 004
+
+**Date:** 2026-09-15  
+**Stage:** Stage 3 — Gradient Checking
+
+### Work Completed
+
+- Created `src/neuralearn/gradient_check.py` (~120 lines)
+  - `numerical_grad(fn, x_val, eps)` — central-difference gradient for single Value
+  - `gradient_check(fn, values, eps, atol, rtol)` — multi-value gradient comparison
+  - Returns structured results with analytical, numerical, abs_error, rel_error, passed
+- Created `tests/test_gradient_check.py` (43 tests)
+  - numerical_grad helper tests (4)
+  - gradient_check utility tests (4)
+  - Individual operation gradient checks: add, mul, sub, pow, div, reciprocal, exp, log, tanh, relu (15)
+  - Composed graph tests (4)
+  - Multi-input tests with 3 and 4 inputs (2)
+  - Deep graph tests: chain, mixed ops, Stage 2 ops (3)
+  - Numerical edge cases: near-zero div, large exp, saturated tanh, small log (4)
+  - Regression tests: gradient corruption detection, D19 compatibility (4)
+- Updated `tests/test_value.py` to import `numerical_grad` from module
+- Updated 6 documentation files (03, 07, 10, 11, 13, 14)
+- All 195 tests pass (152 existing + 43 new)
+
+### Implementation Decisions
+
+- D25: Gradient checking as separate reusable module
+- D26: ε=1e-5, atol=1e-5, rtol=1e-3
+
+### Actual Learning
+
+- Central difference O(ε²) truncation error is more accurate than forward difference O(ε)
+- ε=1e-5 balances truncation (~1e-10) against roundoff (~1e-11)
+- ReLU at x=0 is nondifferentiable; numerical gradient (~0.5) differs from convention (0) — document, don't force match
+- gradient_check must not call backward() — it reads existing .grad values to avoid graph corruption
+- Detecting wrong gradients: setting a.grad=99.0 should fail the check — verified
+
+### Problems
+
+- None encountered during implementation
+
+### Next Step
+
+- Stage 3 implementation complete, pending acceptance
+- Next authorized stage: Stage 4 — Parameters and Layers
+
+---
+
 ## Stage Progress
 
 | Stage | Status | Start Date | End Date |
 |-------|--------|------------|----------|
 | Stage 0 | COMPLETE | 2026-09-15 | 2026-09-15 |
 | Stage 1 | COMPLETE (approved) | 2026-09-15 | 2026-09-15 |
-| Stage 2 | IN PROGRESS | 2026-09-15 | 2026-09-15 |
-| Stage 3 | NOT STARTED | - | - |
+| Stage 2 | COMPLETE (approved) | 2026-09-15 | 2026-09-15 |
+| Stage 3 | IN PROGRESS | 2026-09-15 | 2026-09-15 |
 | Stage 4 | NOT STARTED | - | - |
 | Stage 5 | NOT STARTED | - | - |
 | Stage 6 | NOT STARTED | - | - |
@@ -248,10 +296,10 @@ This document tracks progress through the project stages.
 
 | Metric | Value |
 |--------|-------|
-| Current Stage | 2 |
+| Current Stage | 3 |
 | Documentation Files | 15 |
-| Source Files | 2 |
-| Test Files | 1 |
+| Source Files | 3 |
+| Test Files | 2 |
 | Experiment Files | 0 |
-| Total Tests | 152 |
-| Tests Passed | 152 |
+| Total Tests | 195 |
+| Tests Passed | 195 |

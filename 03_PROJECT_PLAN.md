@@ -2,21 +2,21 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 2 In Progress
+**Status:** Stage 3 COMPLETE
 
 ## Overview
 
 This document defines the staged implementation roadmap for the project. Each stage has clear objectives, acceptance criteria, and dependencies.
 
-**Current Stage:** Stage 2 — Extended Autodiff Operations (in progress)
+**Current Stage:** Stage 3 — Gradient Checking (complete, pending git checkpoint)
 
 ## Stage Overview
 
 ```
 Stage 0  — Project Definition & Documentation     ✓ COMPLETE
 Stage 1  — Core Value / Computational Graph       ✓ COMPLETE
-Stage 2  — Extended Autodiff Operations           ◉ CURRENT
-Stage 3  — Gradient Checking
+Stage 2  — Extended Autodiff Operations          ✓ COMPLETE
+Stage 3  — Gradient Checking                    ✓ COMPLETE
 Stage 4  — Parameters and Layers
 Stage 5  — Loss Functions
 Stage 6  — Optimizers
@@ -55,11 +55,11 @@ Establish project foundation through documentation and scaffolding.
 
 ### Acceptance Criteria
 
-- [ ] Repository structure exists
-- [ ] All required documentation exists
-- [ ] Documentation is internally consistent
-- [ ] README accurately describes current status
-- [ ] No neural-network implementation exists
+- [x] Repository structure exists
+- [x] All required documentation exists
+- [x] Documentation is internally consistent
+- [x] README accurately describes current status
+- [x] No neural-network implementation exists
 
 ### Expected Artifacts
 
@@ -100,18 +100,18 @@ Stage 1 supports **scalar** `Value` objects only. Tensor/vector/matrix support i
 
 ### Acceptance Criteria
 
-- [ ] `Value` class stores scalar data, gradient, parent dependencies, operation metadata, backward function
-- [ ] Addition (`+`) implemented with correct forward and backward
-- [ ] Multiplication (`*`) implemented with correct forward and backward
-- [ ] Negation (`-x`) implemented with correct forward and backward
-- [ ] Subtraction (`-`) implemented with correct forward and backward
-- [ ] Scalar power (`**`) implemented with correct forward and backward
-- [ ] Scalar interoperability works for all operations
-- [ ] `backward()` initializes root gradient to 1.0
-- [ ] Reverse topological traversal propagates gradients correctly
-- [ ] Gradient accumulation works for shared/branching nodes
-- [ ] Numerical gradient checking passes for representative expressions
-- [ ] All unit tests pass
+- [x] `Value` class stores scalar data, gradient, parent dependencies, operation metadata, backward function
+- [x] Addition (`+`) implemented with correct forward and backward
+- [x] Multiplication (`*`) implemented with correct forward and backward
+- [x] Negation (`-x`) implemented with correct forward and backward
+- [x] Subtraction (`-`) implemented with correct forward and backward
+- [x] Scalar power (`**`) implemented with correct forward and backward
+- [x] Scalar interoperability works for all operations
+- [x] `backward()` initializes root gradient to 1.0
+- [x] Reverse topological traversal propagates gradients correctly
+- [x] Gradient accumulation works for shared/branching nodes
+- [x] Numerical gradient checking passes for representative expressions
+- [x] All unit tests pass
 - [ ] No forbidden autodiff frameworks used
 - [ ] Documentation accurately reflects implementation
 
@@ -125,7 +125,7 @@ Stage 1 supports **scalar** `Value` objects only. Tensor/vector/matrix support i
 
 ## Stage 2 — Extended Autodiff Operations
 
-**Status:** IN PROGRESS  
+**Status:** Stage 2 COMPLETE  
 **Dependencies:** Stage 1
 
 ### Objective
@@ -152,22 +152,22 @@ Stage 2 remains **scalar-only** — no tensors, layers, losses, optimizers, or t
 
 ### Acceptance Criteria
 
-- [ ] Division (`__truediv__`, `__rtruediv__`) implemented with correct forward and backward
-- [ ] Exp (`exp()`) implemented with correct forward and backward
-- [ ] Log (`log()`) implemented with correct forward and backward (domain: x > 0)
-- [ ] Tanh (`tanh()`) implemented with correct forward and backward
-- [ ] ReLU (`relu()`) implemented with correct forward and backward
-- [ ] All operations have backward functions that follow the chain rule
-- [ ] Numerical gradient checking passes for all new operations
-- [ ] Scalar interoperability works for all new operations
-- [ ] Domain/edge-case behavior documented (log domain, ReLU at zero, division by zero)
-- [ ] ReLU at zero convention explicitly chosen and documented
-- [ ] Chained/branching/shared graphs work correctly with new operations
-- [ ] Repeated backward (D19) works correctly with new operations
-- [ ] All existing Stage 1 tests still pass (zero regressions)
-- [ ] New tests are added to `tests/test_value.py`
-- [ ] No forbidden autodiff frameworks used
-- [ ] Documentation accurately reflects implementation
+- [x] Division (`__truediv__`, `__rtruediv__`) implemented with correct forward and backward
+- [x] Exp (`exp()`) implemented with correct forward and backward
+- [x] Log (`log()`) implemented with correct forward and backward (domain: x > 0)
+- [x] Tanh (`tanh()`) implemented with correct forward and backward
+- [x] ReLU (`relu()`) implemented with correct forward and backward
+- [x] All operations have backward functions that follow the chain rule
+- [x] Numerical gradient checking passes for all new operations
+- [x] Scalar interoperability works for all new operations
+- [x] Domain/edge-case behavior documented (log domain, ReLU at zero, division by zero)
+- [x] ReLU at zero convention explicitly chosen and documented
+- [x] Chained/branching/shared graphs work correctly with new operations
+- [x] Repeated backward (D19) works correctly with new operations
+- [x] All existing Stage 1 tests still pass (zero regressions)
+- [x] New tests are added to `tests/test_value.py`
+- [x] No forbidden autodiff frameworks used
+- [x] Documentation accurately reflects implementation
 
 ### Expected Artifacts
 
@@ -179,37 +179,56 @@ Stage 2 remains **scalar-only** — no tensors, layers, losses, optimizers, or t
 
 ## Stage 3 — Gradient Checking
 
-**Status:** PLANNED  
+**Status:** COMPLETE  
 **Dependencies:** Stage 2
 
 ### Objective
 
-Verify autodiff correctness through numerical gradient checking.
+Implement a robust, reusable gradient-checking subsystem that independently verifies analytical autodiff gradients against numerical finite-difference approximations.
+
+### Scope Note
+
+Stage 3 remains **scalar-only** — no tensors, layers, losses, optimizers, or training.
 
 ### Major Work
 
-- Implement finite-difference gradient checking
-- Create gradient-checking utilities
-- Verify all implemented gradients
-- Document gradient-checking methodology
+- Create `src/neuralearn/gradient_check.py` with reusable numerical gradient utilities
+- Central-difference finite-difference approximation with configurable epsilon
+- Gradient comparison with absolute and relative tolerance
+- Tests covering individual operations, composed graphs, multi-input graphs, deep graphs
+- Document gradient-checking methodology, epsilon selection, tolerance, limitations
 
 ### Expected Learning
 
-- How numerical gradient approximation works
-- Why analytical and numerical gradients may differ
-- Appropriate tolerances for gradient checking
+- How central-difference finite differences approximate derivatives
+- Why analytical and numerical gradients may differ (truncation error, roundoff)
+- How to choose epsilon and tolerance for meaningful gradient checks
+- Limitations around nondifferentiable points (ReLU at zero)
 
 ### Acceptance Criteria
 
-- [ ] Finite-difference gradient checking is implemented
-- [ ] All implemented gradients pass gradient checking
-- [ ] Appropriate tolerance is documented
-- [ ] Gradient-checking methodology is documented
+- [x] `gradient_check.py` module created with `numerical_grad` and `gradient_check` functions
+- [x] Numerical gradients use central differences (not autodiff)
+- [x] Analytical gradients come from `Value.backward()`
+- [x] One-input and multi-input gradient checks work
+- [x] All individual Stage 1 operations are covered
+- [x] All Stage 2 operations are covered
+- [x] Composed graphs are covered
+- [x] Deep graphs are covered
+- [x] Gradient comparisons use meaningful tolerances
+- [x] ReLU zero convention handled/documented
+- [x] Numerical edge cases documented
+- [x] Existing 152 tests still pass (zero regressions)
+- [x] New Stage 3 tests pass
+- [x] D19 repeated-backward semantics remain unchanged
+- [x] No forbidden frameworks added
+- [x] No Stage 4 functionality implemented
+- [x] Documentation accurately reflects implementation
 
 ### Expected Artifacts
 
-- `src/neuralearn/gradient_check.py`
-- `tests/test_gradient_check.py`
+- `src/neuralearn/gradient_check.py` — Reusable gradient-checking module
+- `tests/test_gradient_check.py` — Comprehensive gradient-checking tests
 - Updated documentation
 
 ---

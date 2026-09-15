@@ -2,13 +2,13 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 2 In Progress
+**Status:** Stage 3 COMPLETE
 
 ## Overview
 
 This document describes the architecture of the neural-network framework. The architecture is designed for educational clarity, correctness, and modularity.
 
-**Current State:** Stage 2 in progress — scalar `Value` class extended with division, exp, log, tanh, ReLU. Layers, losses, optimizers, and training are planned but not yet implemented.
+**Current State:** Stage 3 gradient-checking module implemented and validated. Reusable `gradient_check.py` with numerical gradient verification. 195 tests passing. Layers, losses, optimizers, and training are planned but not yet implemented.
 
 ## Conceptual Architecture
 
