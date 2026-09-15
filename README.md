@@ -1,6 +1,6 @@
 # Project 001 — Neural Network From Scratch
 
-**Status:** Stage 3 COMPLETE
+**Status:** Stage 4 In Progress
 
 ## Overview
 
@@ -8,7 +8,7 @@ An educational deep-learning framework built from first principles to demonstrat
 
 This project implements a small but complete neural-network training system without using any existing deep-learning frameworks or automatic-differentiation libraries. The goal is to build strong AI/ML engineering fundamentals through real implementation work.
 
-**Current State:** Stage 3 gradient-checking module implemented and validated. Reusable `gradient_check.py` with numerical gradient verification. 195 tests passing. Ready for git checkpoint.
+**Current State:** Stage 4 parameters and layers implemented. Parameter, Module, Neuron, Linear, ReLU, Tanh. 252 tests passing. Proceeding to architect review.
 
 ## Problem / Motivation
 
@@ -140,7 +140,9 @@ neural-network-from-scratch/
 │   └── neuralearn/
 │       ├── __init__.py
 │       ├── value.py
-│       └── gradient_check.py
+│       ├── gradient_check.py
+│       ├── parameter.py
+│       └── layers.py
 ├── tests/
 ├── experiments/
 ├── configs/
@@ -164,14 +166,16 @@ neural-network-from-scratch/
 
 ## Current Milestone
 
-**Stage 3 — Gradient Checking**
+**Stage 4 — Parameters & Layers**
 
-Stage 3 validates the autodiff engine with numerical gradient checking:
-- Reusable `gradient_check.py` module with `numerical_grad` and `gradient_check`
-- Central-difference finite-difference approximation (ε=1e-5)
-- Gradient comparison with absolute and relative tolerance
-- Tests covering individual operations, composed graphs, multi-input, deep graphs
-- 195 passing tests (152 existing + 43 new)
+Stage 4 builds neural-network abstractions on top of the autodiff engine:
+- `Parameter` — trainable scalar (subclasses Value)
+- `Module` — base class for layers (forward, parameters, zero_grad)
+- `Neuron` — single neuron (weighted sum + bias)
+- `Linear` — fully-connected layer (nin → nout)
+- `ReLU`, `Tanh` — activation layers
+- Gradient-checking validation of layer gradients
+- 252 passing tests (195 existing + 57 new)
 
 ## Future Roadmap
 

@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 3 COMPLETE
+**Status:** Stage 4 IN PROGRESS
 
 ## Overview
 
@@ -270,6 +270,47 @@ This document tracks progress through the project stages.
 
 ---
 
+## Entry 005
+
+**Date:** 2026-09-15  
+**Stage:** Stage 4 — Parameters and Layers
+
+### Work Completed
+
+- Created `src/neuralearn/parameter.py` (60 lines)
+  - `Parameter` subclasses `Value` (IS-A relationship, D27)
+  - `requires_grad` flag (default True)
+  - `zero_grad()` method
+- Created `src/neuralearn/layers.py` (255 lines)
+  - `Module` base class with `__call__`, `forward`, `parameters`, `zero_grad` (D28)
+  - `Neuron` — weighted sum + bias with nin Parameters + 1 bias (D29)
+  - `Linear` — nout Neurons, nin inputs each, total nout*(nin+1) parameters
+  - `ReLU` — wraps Value.relu() (D30)
+  - `Tanh` — wraps Value.tanh() (D30)
+- Created `tests/test_parameter.py` (15 tests)
+  - Construction, gradient access, zero_grad, graph integration
+- Created `tests/test_layers.py` (42 tests)
+  - Module, Neuron, Linear, ReLU, Tanh
+  - Gradient checking: single neuron, Linear(3,1), Linear(2,3), ReLU(Linear(x))
+  - Edge cases: zero inputs, repeated forward/backward, deterministic init
+- Updated `__init__.py` to expose public API, version 0.4.0 → 0.5.0
+- Updated 4 documentation files (03, 04, 07, 10)
+- All 252 tests pass (195 existing + 57 new)
+
+### Decisions
+
+- D27: Parameter subclasses Value (IS-A, natural graph participation)
+- D28: Module is lightweight base class (not abstract, just convention)
+- D29: Linear uses direct weight/bias Parameters (not wrapping Neuron objects)
+- D30: ReLU/Tanh wrap existing Value operations (no new math)
+
+### Next Step
+
+- Stage 4 implementation complete, pending architect review
+- Next authorized stage: Stage 5 — Loss Functions
+
+---
+
 ## Stage Progress
 
 | Stage | Status | Start Date | End Date |
@@ -277,8 +318,8 @@ This document tracks progress through the project stages.
 | Stage 0 | COMPLETE | 2026-09-15 | 2026-09-15 |
 | Stage 1 | COMPLETE (approved) | 2026-09-15 | 2026-09-15 |
 | Stage 2 | COMPLETE (approved) | 2026-09-15 | 2026-09-15 |
-| Stage 3 | IN PROGRESS | 2026-09-15 | 2026-09-15 |
-| Stage 4 | NOT STARTED | - | - |
+| Stage 3 | COMPLETE (approved) | 2026-09-15 | 2026-09-15 |
+| Stage 4 | IN PROGRESS | 2026-09-15 | 2026-09-15 |
 | Stage 5 | NOT STARTED | - | - |
 | Stage 6 | NOT STARTED | - | - |
 | Stage 7 | NOT STARTED | - | - |
@@ -296,10 +337,10 @@ This document tracks progress through the project stages.
 
 | Metric | Value |
 |--------|-------|
-| Current Stage | 3 |
+| Current Stage | 4 |
 | Documentation Files | 15 |
-| Source Files | 3 |
-| Test Files | 2 |
+| Source Files | 5 |
+| Test Files | 4 |
 | Experiment Files | 0 |
-| Total Tests | 195 |
-| Tests Passed | 195 |
+| Total Tests | 252 |
+| Tests Passed | 252 |

@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 3 COMPLETE
+**Status:** Stage 4 IN PROGRESS
 
 ## Overview
 
@@ -235,7 +235,7 @@ Stage 3 remains **scalar-only** — no tensors, layers, losses, optimizers, or t
 
 ## Stage 4 — Parameters and Layers
 
-**Status:** PLANNED  
+**Status:** IN PROGRESS  
 **Dependencies:** Stage 2
 
 ### Objective
@@ -244,11 +244,12 @@ Implement trainable parameters and neural-network layers.
 
 ### Major Work
 
-- Implement Parameter class
+- Implement Parameter class (subclass of Value)
+- Implement Module base class
+- Implement Neuron class
 - Implement Linear layer
-- Implement ReLU activation
-- Implement Tanh activation
-- Implement Sequential container
+- Implement ReLU activation layer
+- Implement Tanh activation layer
 
 ### Expected Learning
 
@@ -258,10 +259,17 @@ Implement trainable parameters and neural-network layers.
 
 ### Acceptance Criteria
 
-- [ ] Parameter class stores and tracks gradients
-- [ ] Linear layer computes forward pass correctly
-- [ ] ReLU and Tanh layers compute correctly
-- [ ] Sequential container manages layers
+- [ ] Parameter subclasses Value; IS-A Value, participates in computational graph
+- [ ] Parameter has `requires_grad` flag (default True)
+- [ ] Parameter has `zero_grad()` method to reset `.grad` to 0.0
+- [ ] Module is a lightweight base class (not abstract)
+- [ ] Module provides `forward()`, `parameters()`, `zero_grad()`
+- [ ] Neuron computes weighted sum + bias correctly
+- [ ] Linear layer computes y = Wx + b correctly
+- [ ] Linear parameters count is nout * (nin + 1)
+- [ ] ReLU layer wraps existing Value.relu()
+- [ ] Tanh layer wraps existing Value.tanh()
+- [ ] All parameters are discoverable via Module.parameters()
 - [ ] Unit tests pass for all layers
 
 ### Expected Artifacts

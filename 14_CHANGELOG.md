@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 3 COMPLETE
+**Status:** Stage 4 IN PROGRESS
 
 ## Overview
 
@@ -16,20 +16,16 @@ This document records changes to the project.
 
 ### Added
 
-- Stage 3: Gradient-checking subsystem:
-  - `src/neuralearn/gradient_check.py` — reusable module with `numerical_grad` and `gradient_check` functions
-  - `tests/test_gradient_check.py` — 43 comprehensive gradient-checking tests
-  - Central-difference finite-difference approximation (ε=1e-5)
-  - Multi-value gradient comparison with absolute and relative tolerance
-  - Tests covering all individual operations, composed graphs, multi-input, deep graphs
-  - Numerical edge case documentation (ReLU at zero, near-zero division, saturated tanh)
-  - Regression tests for D19 compatibility and incorrect gradient detection
-- Updated `tests/test_value.py` to import `numerical_grad` from gradient_check module
-- Updated 6 documentation files (03, 07, 10, 11, 13, 14)
+- Stage 4: Parameters and layers:
+  - `src/neuralearn/parameter.py` — Parameter class (subclasses Value, zero_grad, requires_grad)
+  - `src/neuralearn/layers.py` — Module, Neuron, Linear, ReLU, Tanh
+  - `tests/test_parameter.py` — 15 parameter tests
+  - `tests/test_layers.py` — 42 layer tests including gradient checking
+- Updated 4 documentation files (03, 04, 07, 10)
 
 ### Changed
 
-- Version bumped from 0.3.0 to 0.4.0
+- Version bumped from 0.4.0 to 0.5.0
 
 ### Deprecated
 
@@ -63,6 +59,7 @@ This document records changes to the project.
 
 | Version | Date | Stage | Description |
 |---------|------|-------|-------------|
+| 0.5.0 | 2026-09-15 | 4 | Parameter, Module, Neuron, Linear, ReLU, Tanh, 57 tests, D27-D30 |
 | 0.4.0 | 2026-09-15 | 3 | Gradient checking module: numerical_grad, gradient_check, 43 tests, D25-D26 |
 | 0.3.0 | 2026-09-15 | 2 | Extended ops: div, reciprocal, exp, log, tanh, relu, 152 tests, D20-D24 |
 | 0.2.0 | 2026-09-15 | 1 | Value class, forward ops, backward propagation, 87 tests, D19 backward fix |

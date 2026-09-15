@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 3 COMPLETE
+**Status:** Stage 4 IN PROGRESS
 
 ## Overview
 
@@ -166,30 +166,72 @@ Backward:
   Total dx = 2x + 1
 ```
 
-### Parameters
+### Parameter (Stage 4 — Implemented)
 
-**Purpose:** Store trainable model weights.
+**Purpose:** A trainable scalar that extends Value with gradient-tracking semantics.
 
-**Responsibilities:**
-- Store weight data
-- Track gradients
-- Be distinguishable from non-trainable values
-
-**Key Difference from Value:** Parameters are the values we want to optimize. They are the "leaf nodes" of the computational graph.
-
-### Layers
-
-**Purpose:** Compose operations into reusable building blocks.
+**Design Decision (D27):** Parameter subclasses Value. It IS-A Value, so it naturally participates in the computational graph. The `.data`/`.grad` interface is identical. No adapter code is needed.
 
 **Responsibilities:**
-- Define forward computation
-- Manage parameters
-- Connect to autodiff system
+- Inherit all Value arithmetic operations
+- Add `requires_grad` flag (default True)
+- Add `zero_grad()` method to reset `.grad` to 0.0
+- Be discoverable by Module.parameters()
 
-**Key Layers:**
-- Linear: `y = Wx + b`
-- ReLU: `y = max(0, x)`
-- Tanh: `y = tanh(x)`
+```python
+class Parameter(Value):
+    def __init__(self, data: float, requires_grad: bool = True) -> None:
+        super().__init__(data)
+        self.requires_grad = requires_grad
+
+    def zero_grad(self) -> None:
+        self.grad = 0.0
+```
+
+### Module (Stage 4 — Implemented)
+
+**Purpose:** Base class for neural-network layers providing forward computation, parameter discovery, and gradient reset.
+
+**Design Decision (D28):** Module is a lightweight base class, not an abstract base class. It provides `forward()`, `parameters()`, `zero_grad()`.
+
+```python
+class Module:
+    def forward(self, *args) -> ...: ...
+    def parameters(self) -> List[Parameter]: ...
+    def zero_grad(self) -> None: ...
+```
+
+### Neuron (Stage 4 — Implemented)
+
+**Purpose:** A single neuron computing weighted sum + bias.
+
+```python
+class Neuron(Module):
+    def __init__(self, nin: int) -> None:
+        # weights: nin Parameters, bias: 1 Parameter
+        # y = w1*x1 + w2*x2 + ... + wn*xn + b
+```
+
+### Linear (Stage 4 — Implemented)
+
+**Purpose:** A fully-connected layer with nin inputs and nout outputs.
+
+```python
+class Linear(Module):
+    def __init__(self, nin: int, nout: int) -> None:
+        # nout neurons, each with nin weights + 1 bias
+        # Total parameters: nout * (nin + 1)
+```
+
+### ReLU Layer (Stage 4 — Implemented)
+
+**Purpose:** Applies ReLU activation. Wraps existing Value.relu().
+
+```python
+class ReLU(Module):
+    def forward(self, x):
+        return x.relu()
+```
 
 ### Model
 

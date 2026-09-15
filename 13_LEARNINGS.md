@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 3 COMPLETE
+**Status:** Stage 4 IN PROGRESS
 
 ## Overview
 
@@ -496,6 +496,54 @@ Separation of concerns: the gradient checker validates gradients; the autodiff e
 
 ---
 
+### Parameter Subclassing Value for Clean Graph Participation
+
+**Date:** 2026-09-15  
+**Stage:** 4  
+**Related Code:** `src/neuralearn/parameter.py`
+
+#### What Was Implemented
+
+Parameter subclasses Value directly. It adds `requires_grad` and `zero_grad()` but inherits all arithmetic operations.
+
+#### What Was Learned
+
+Subclassing Value (IS-A) was clearly better than wrapping Value (HAS-A):
+1. No adapter code needed — `Parameter * Value` just works
+2. The computational graph naturally includes Parameters as leaf nodes
+3. `backward()` correctly accumulates gradients into Parameters
+4. Optimizers can simply iterate `.parameters()` and read/write `.data`/`.grad`
+
+The key insight: since Value already has the complete interface (data, grad, arithmetic ops), subclassing adds zero ceremony. A wrapper would have needed `__mul__`, `__add__`, etc. delegation methods.
+
+#### Engineering Insight
+
+The `__call__` pattern on Module makes layer usage clean: `y = layer(x)` instead of `y = layer.forward(x)`. This matches the PyTorch convention and feels natural.
+
+---
+
+### Module as Convention, Not Abstraction
+
+**Date:** 2026-09-15  
+**Stage:** 4  
+**Related Code:** `src/neuralearn/layers.py`
+
+#### What Was Implemented
+
+Module is a base class with `forward()`, `parameters()`, `zero_grad()`. It is NOT abstract — no metaclass, no ABC, no decorator magic.
+
+#### What Was Learned
+
+For an educational framework, a plain base class is better than an abstract base class:
+1. Students can read and understand it immediately
+2. `NotImplementedError` in `forward()` gives a clear error message
+3. `parameters()` returns `[]` by default, which is correct for stateless modules
+4. `zero_grad()` uses `parameters()` — no duplication
+
+The simplicity means: when someone reads `class Linear(Module)`, they immediately understand the interface without needing to learn framework conventions.
+
+---
+
 ## Progress Tracking
 
 | Category | Entries | Last Updated |
@@ -503,8 +551,8 @@ Separation of concerns: the gradient checker validates gradients; the autodiff e
 | Mathematical | 4 | 2026-09-15 |
 | Implementation | 3 | 2026-09-15 |
 | ML | 0 | - |
-| Engineering | 3 | 2026-09-15 |
-| **Total** | **10** | 2026-09-15 |
+| Engineering | 4 | 2026-09-15 |
+| **Total** | **11** | 2026-09-15 |
 
 ---
 

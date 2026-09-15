@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 3 COMPLETE
+**Status:** Stage 3 COMPLETE, Stage 4 IN PROGRESS
 
 ## Overview
 
@@ -645,6 +645,123 @@ Central-difference finite differences have O(ε²) truncation error. Too large a
 
 ---
 
+## Stage 4 Decisions
+
+### D27: Parameter Subclasses Value
+
+**Date:** Stage 4  
+**Status:** ACCEPTED
+
+### Decision
+
+Parameter subclasses Value (IS-A relationship). Parameter IS-A Value.
+
+### Context
+
+We need a trainable leaf node that participates in the computational graph. The alternative is a separate class with an adapter pattern.
+
+### Reasoning
+
+- IS-A relationship means Parameter naturally participates in all Value arithmetic
+- No adapter code needed; `.data`/`.grad` interface is identical
+- Consistent with how PyTorch `nn.Parameter` extends `Tensor`
+- Simpler design with less code
+
+### Consequences
+
+- Parameter inherits all Value operations
+- Parameter can be used anywhere a Value is expected
+- `requires_grad` flag distinguishes trainable from non-trainable values
+- `zero_grad()` method resets gradient to 0.0
+
+---
+
+### D28: Module as Lightweight Base Class
+
+**Date:** Stage 4  
+**Status:** ACCEPTED
+
+### Decision
+
+Module is a lightweight base class, not an abstract base class. It provides `forward()`, `parameters()`, `zero_grad()` by convention.
+
+### Context
+
+Neural-network layers need a common interface for forward computation, parameter discovery, and gradient reset. An ABC would enforce implementation but adds complexity.
+
+### Reasoning
+
+- Lightweight: no metaclass overhead, no abstractmethod decorators
+- Convention-based: subclasses implement methods by name, not by enforced contract
+- Pythonic: duck typing over rigid interfaces
+- Easy to understand and extend
+
+### Consequences
+
+- Subclasses must implement `forward()`, `parameters()`, `zero_grad()` correctly
+- No compile-time enforcement of interface
+- Simple and readable base class
+
+---
+
+### D29: Linear Uses Direct Weight/Bias Parameters
+
+**Date:** Stage 4  
+**Status:** ACCEPTED
+
+### Decision
+
+Linear layer stores weight and bias Parameters directly, not by wrapping Neuron objects internally.
+
+### Context
+
+Linear is the core layer. The alternative is composing Neuron objects inside Linear.
+
+### Reasoning
+
+- Direct parameter storage is simpler and more efficient
+- No indirection through Neuron objects
+- Parameters are flat and easy to collect via `parameters()`
+- Matches how frameworks implement Linear
+
+### Consequences
+
+- Linear stores weight matrix and bias vector as Parameters
+- `parameters()` returns flat list of all weight + bias Parameters
+- Total parameter count: `nout * (nin + 1)`
+- Neuron is a teaching abstraction, not used internally by Linear
+
+---
+
+### D30: ReLU/Tanh as Module Wrappers
+
+**Date:** Stage 4  
+**Status:** ACCEPTED
+
+### Decision
+
+ReLU and Tanh are Module subclasses that wrap existing Value operations (`Value.relu()`, `Value.tanh()`).
+
+### Context
+
+Activation functions need to participate in the Module hierarchy for composition, but their computation is already implemented in Value.
+
+### Reasoning
+
+- No code duplication: delegates to existing Value methods
+- Consistent Module interface: all layers are Modules
+- Simple implementation: `forward()` just calls the Value method
+- Gradient computation is already correct in Value
+
+### Consequences
+
+- ReLU/Tanh are thin wrappers
+- Forward pass delegates to Value.relu()/tanh()
+- Backward pass uses existing Value backward rules
+- Consistent with the Module interface
+
+---
+
 ## Decision Summary
 
 | ID | Decision | Status |
@@ -675,6 +792,10 @@ Central-difference finite differences have O(ε²) truncation error. Too large a
 | D24 | All new ops in value.py | ACCEPTED |
 | D25 | Gradient checking as separate module | ACCEPTED |
 | D26 | Epsilon=1e-5, atol=1e-5, rtol=1e-3 | ACCEPTED |
+| D27 | Parameter subclasses Value (IS-A) | ACCEPTED |
+| D28 | Module as lightweight base class | ACCEPTED |
+| D29 | Linear uses direct weight/bias | ACCEPTED |
+| D30 | ReLU/Tanh as Module wrappers | ACCEPTED |
 
 ---
 

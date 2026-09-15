@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 3 COMPLETE
+**Status:** Stage 3 COMPLETE, Stage 4 IN PROGRESS
 
 ## Overview
 
@@ -111,8 +111,8 @@ tests/
 ├── test_gradient_check.py  # Gradient-checking tests (Stage 3)
 ├── test_operations.py      # Arithmetic operation tests (PLANNED)
 ├── test_autodiff.py        # Autodiff tests (PLANNED)
-├── test_parameter.py       # Parameter tests (PLANNED)
-├── test_layers.py          # Layer tests (PLANNED)
+├── test_parameter.py       # Parameter tests (Stage 4 — IN PROGRESS)
+├── test_layers.py          # Layer tests (Stage 4 — IN PROGRESS)
 ├── test_losses.py          # Loss function tests (PLANNED)
 ├── test_optimizers.py      # Optimizer tests (PLANNED)
 ├── test_training.py        # Training loop tests (PLANNED)
