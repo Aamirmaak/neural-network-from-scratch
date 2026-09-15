@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 7 IN PROGRESS
+**Status:** Stage 8 IN PROGRESS
 
 ## Overview
 
@@ -554,7 +554,68 @@ The bias correction terms `(1 - beta^t)` approach 1 as t grows, so the correctio
 
 ---
 
-## Learning Categories
+### Dataset/DataLoader Separation of Concerns
+
+**Date:** 2026-09-16  
+**Stage:** 8  
+**Related Code:** `src/neuralearn/datasets.py`, `src/neuralearn/dataloaders.py`
+
+#### Initial Understanding
+
+I initially considered a single class that handled both data storage and iteration.
+
+#### What Was Implemented
+
+Two separate classes: Dataset (storage + validation) and DataLoader (iteration + batching + shuffling).
+
+#### What Was Learned
+
+Separating storage from iteration is cleaner because:
+1. Dataset is a simple, stateless container — easy to test and reason about
+2. DataLoader handles the complex iteration logic (batching, shuffling, seeds)
+3. Different DataLoader configurations can iterate over the same Dataset
+4. The separation mirrors how real frameworks (PyTorch) organize data loading
+5. Each class has a single, clear responsibility
+
+The key insight: Dataset is to data what a list is to elements — a container with indexing. DataLoader is to Dataset what a range-based for loop is to a list — an iteration mechanism.
+
+#### Mathematical Insight
+
+Batch count: `ceil(n/batch_size)` without drop_last, `floor(n/batch_size)` with drop_last. This is a simple ceiling/floor function but getting it right for edge cases (partial batches, dataset smaller than batch) requires careful thought.
+
+#### Engineering Insight
+
+Deterministic shuffling requires a dedicated random.Random instance per DataLoader, not the global random module. This avoids polluting global state and ensures two DataLoaders with the same seed produce identical behavior.
+
+---
+
+### Per-Sample Training Within Batches
+
+**Date:** 2026-09-16  
+**Stage:** 8  
+**Related Code:** `src/neuralearn/training.py`
+
+#### Initial Understanding
+
+I initially thought DataLoader should accumulate gradients across a batch and call optimizer.step() once per batch.
+
+#### What Was Implemented
+
+Per-sample training within batches: each sample triggers forward → loss → backward → step → zero_grad, even when batched.
+
+#### What Was Learned
+
+For the scalar architecture, per-sample training is the only correct approach because:
+1. Loss functions operate on individual predictions, not batch tensors
+2. There is no batched matrix multiplication
+3. Gradient accumulation would require careful loss scaling
+4. Per-sample training is mathematically equivalent to batch training with batch_size=1
+
+The DataLoader batches are for iteration grouping and shuffling, not for gradient computation. This preserves D39 (per-sample training) while adding data loading infrastructure.
+
+#### Engineering Insight
+
+When designing DataLoader integration with a training engine, the critical question is: "Does the DataLoader change the gradient/update semantics?" If yes, it's a major architectural change. If no (as in our case), it's a clean extension that preserves existing behavior.
 
 ### Mathematical Concepts
 
@@ -572,6 +633,7 @@ The bias correction terms `(1 - beta^t)` approach 1 as t grows, so the correctio
 - Graph construction
 - Backward pass
 - Gradient checking
+- Dataset/DataLoader design
 
 ### ML Concepts
 

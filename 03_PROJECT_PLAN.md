@@ -20,8 +20,8 @@ Stage 3  — Gradient Checking                    ✓ COMPLETE
 Stage 4  — Parameters and Layers            ✓ COMPLETE
 Stage 5  — Loss Functions                    ✓ COMPLETE
 Stage 6  — Optimizers                      ✓ COMPLETE
-Stage 7  — Training Engine
-Stage 8  — XOR Experiment
+Stage 7  — Training Engine                  ✓ COMPLETE
+Stage 8  — Dataset & DataLoader
 Stage 9  — Nonlinear Regression
 Stage 10 — Controlled Experiments
 Stage 11 — Visualization and Evaluation
@@ -395,10 +395,54 @@ Implement a reusable training engine that connects model, loss, and optimizer in
 
 ---
 
-## Stage 8 — XOR Experiment
+## Stage 8 — Dataset & DataLoader
+
+**Status:** IN PROGRESS  
+**Dependencies:** Stage 7
+
+### Objective
+
+Implement lightweight Dataset and DataLoader abstractions for structured data iteration with batching and shuffling support.
+
+### Major Work
+
+- Implement Dataset class for paired input/target storage
+- Implement DataLoader class with batching, shuffling, drop_last
+- Integrate DataLoader with Trainer.fit()
+- Deterministic shuffling with explicit seed
+- Preserve per-sample training semantics (D39)
+
+### Expected Learning
+
+- How data loading separates storage from iteration
+- How batching affects training iteration patterns
+- How deterministic shuffling enables reproducible experiments
+- How DataLoader integrates with existing training lifecycle
+
+### Acceptance Criteria
+
+- [x] Dataset stores and validates paired inputs/targets
+- [x] DataLoader yields correct batches
+- [x] Shuffle preserves input-target pairing
+- [x] Seed produces deterministic ordering
+- [x] drop_last handles partial batches
+- [x] len() returns correct batch count
+- [x] Trainer accepts DataLoader in fit()
+- [x] Existing training behavior preserved
+
+### Expected Artifacts
+
+- `src/neuralearn/datasets.py`
+- `src/neuralearn/dataloaders.py`
+- `tests/test_dataset.py`
+- `tests/test_dataloader.py`
+
+---
+
+## Stage 9 — XOR Experiment
 
 **Status:** PLANNED  
-**Dependencies:** Stage 7
+**Dependencies:** Stage 8
 
 ### Objective
 
@@ -433,10 +477,10 @@ Demonstrate training on XOR classification problem.
 
 ---
 
-## Stage 9 — Nonlinear Regression
+## Stage 10 — Nonlinear Regression
 
 **Status:** PLANNED  
-**Dependencies:** Stage 7
+**Dependencies:** Stage 8
 
 ### Objective
 

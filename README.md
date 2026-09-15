@@ -1,6 +1,6 @@
 # Project 001 — Neural Network From Scratch
 
-**Status:** Stage 7 In Progress
+**Status:** Stage 8 In Progress
 
 ## Overview
 
@@ -8,7 +8,7 @@ An educational deep-learning framework built from first principles to demonstrat
 
 This project implements a small but complete neural-network training system without using any existing deep-learning frameworks or automatic-differentiation libraries. The goal is to build strong AI/ML engineering fundamentals through real implementation work.
 
-**Current State:** Stage 7 training engine implemented. Trainer class with fit/evaluate API. Per-sample training lifecycle. 394 tests passing. Proceeding to architect review.
+**Current State:** Stage 8 Dataset & DataLoader implemented. Dataset for paired storage, DataLoader with batching/shuffling/seed/drop_last. Trainer accepts DataLoader. 457 tests passing.
 
 ## Problem / Motivation
 
@@ -54,6 +54,8 @@ The completed project will be a small deep-learning framework supporting:
 | Losses | IMPLEMENTED | MSE, Binary Cross-Entropy |
 | Optimizers | IMPLEMENTED | SGD, Momentum, Adam |
 | Training Engine | IMPLEMENTED | Trainer with fit/evaluate lifecycle |
+| Dataset | IMPLEMENTED | Paired input/target storage with validation |
+| DataLoader | IMPLEMENTED | Batching, shuffling, seed, drop_last |
 | Experiments | PLANNED | XOR, regression, controlled comparisons |
 | Visualization | PLANNED | Training curves, decision boundaries |
 
@@ -145,7 +147,9 @@ neural-network-from-scratch/
 │       ├── layers.py
 │       ├── losses.py
 │       ├── optimizers.py
-│       └── training.py
+│       ├── training.py
+│       ├── datasets.py
+│       └── dataloaders.py
 ├── tests/
 ├── experiments/
 ├── configs/
@@ -169,15 +173,14 @@ neural-network-from-scratch/
 
 ## Current Milestone
 
-**Stage 7 — Training Engine**
+**Stage 8 — Dataset & DataLoader**
 
-Stage 7 implements the training engine:
-- `Trainer` — connects model, loss, and optimizer
-- `fit()` — training lifecycle with configurable epochs
-- `evaluate()` — inference-only loss computation
-- Training history with per-epoch mean loss
-- Input validation and clear error messages
-- 394 passing tests (354 existing + 40 new)
+Stage 8 implements data loading infrastructure:
+- `Dataset` — paired input/target storage with validation
+- `DataLoader` — batching, shuffling, deterministic seed, drop_last
+- Trainer integration — `fit()` accepts DataLoader or direct lists
+- Per-sample training within batches preserved
+- 457 passing tests (394 existing + 63 new)
 
 ## Future Roadmap
 

@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 7 IN PROGRESS
+**Status:** Stage 8 IN PROGRESS
 
 ## Overview
 
@@ -114,6 +114,8 @@ tests/
 ├── test_losses.py          # Loss function tests (Stage 5)
 ├── test_optimizers.py      # Optimizer tests (Stage 6)
 ├── test_training.py        # Training engine tests (Stage 7)
+├── test_dataset.py         # Dataset tests (Stage 8)
+├── test_dataloader.py      # DataLoader tests (Stage 8)
 └── test_integration.py     # Integration tests (PLANNED)
 ```
 

@@ -20,6 +20,8 @@ from neuralearn.layers import Linear, Module, ReLU, Tanh
 from neuralearn.losses import mse_loss, binary_cross_entropy
 from neuralearn.optimizers import SGD, MomentumSGD, Adam
 from neuralearn.training import Trainer
+from neuralearn.datasets import Dataset
+from neuralearn.dataloaders import DataLoader
 
 
 # ---------------------------------------------------------------------------
@@ -618,3 +620,192 @@ class TestEdgeCases:
         h2 = t2.fit(inputs, targets, epochs=10)
 
         assert h1["loss"] == h2["loss"]
+
+
+# ---------------------------------------------------------------------------
+# 13. DataLoader Integration
+# ---------------------------------------------------------------------------
+
+class TestDataLoaderIntegration:
+    def test_dataloader_training_runs(self):
+        """Trainer.fit() works with a DataLoader."""
+        layer = Linear(2, 1)
+        opt = SGD(layer.parameters(), lr=0.01)
+        trainer = Trainer(layer, mse_loss, opt)
+
+        inputs = [[Value(1.0), Value(2.0)], [Value(3.0), Value(4.0)]]
+        targets = [[Value(5.0)], [Value(11.0)]]
+        ds = Dataset(inputs, targets)
+        loader = DataLoader(ds, batch_size=2)
+
+        history = trainer.fit(loader, epochs=5)
+        assert len(history["loss"]) == 5
+
+    def test_dataloader_loss_decreases(self):
+        """Training with DataLoader reduces loss."""
+        layer = Linear(1, 1)
+        layer.neurons[0].weights[0] = Parameter(0.0)
+        layer.neurons[0].bias = Parameter(0.0)
+
+        opt = SGD(layer.parameters(), lr=0.05)
+        trainer = Trainer(layer, mse_loss, opt)
+
+        inputs = [[Value(x)] for x in [0.0, 1.0, 2.0, 3.0]]
+        targets = [[Value(2 * x + 1)] for x in [0.0, 1.0, 2.0, 3.0]]
+        ds = Dataset(inputs, targets)
+        loader = DataLoader(ds, batch_size=2)
+
+        history = trainer.fit(loader, epochs=200)
+        assert history["loss"][-1] < history["loss"][0]
+
+    def test_dataloader_parameters_update(self):
+        """Parameters change when training with DataLoader."""
+        layer = Linear(2, 1)
+        opt = SGD(layer.parameters(), lr=0.01)
+        trainer = Trainer(layer, mse_loss, opt)
+
+        inputs = [[Value(1.0), Value(2.0)], [Value(3.0), Value(4.0)]]
+        targets = [[Value(5.0)], [Value(11.0)]]
+        ds = Dataset(inputs, targets)
+        loader = DataLoader(ds, batch_size=1)
+
+        initial_params = [p.data for p in layer.parameters()]
+        trainer.fit(loader, epochs=10)
+        final_params = [p.data for p in layer.parameters()]
+
+        assert any(abs(i - f) > 1e-10 for i, f in zip(initial_params, final_params))
+
+    def test_dataloader_gradients_reset(self):
+        """Gradients are zero after DataLoader training."""
+        layer = Linear(2, 1)
+        opt = SGD(layer.parameters(), lr=0.01)
+        trainer = Trainer(layer, mse_loss, opt)
+
+        inputs = [[Value(1.0), Value(2.0)]]
+        targets = [[Value(3.0)]]
+        ds = Dataset(inputs, targets)
+        loader = DataLoader(ds, batch_size=1)
+
+        trainer.fit(loader, epochs=5)
+        for p in layer.parameters():
+            assert p.grad == 0.0
+
+    def test_dataloader_vs_direct_same_result(self):
+        """DataLoader and direct training produce the same loss history
+        when using batch_size=dataset_size (single batch, no shuffle)."""
+        layer1 = Linear(1, 1)
+        layer1.neurons[0].weights[0] = Parameter(0.5)
+        layer1.neurons[0].bias = Parameter(0.3)
+        opt1 = SGD(layer1.parameters(), lr=0.01)
+        trainer1 = Trainer(layer1, mse_loss, opt1)
+
+        layer2 = Linear(1, 1)
+        layer2.neurons[0].weights[0] = Parameter(0.5)
+        layer2.neurons[0].bias = Parameter(0.3)
+        opt2 = SGD(layer2.parameters(), lr=0.01)
+        trainer2 = Trainer(layer2, mse_loss, opt2)
+
+        inputs = [[Value(1.0)], [Value(2.0)]]
+        targets = [[Value(3.0)], [Value(5.0)]]
+
+        # Direct training
+        h1 = trainer1.fit(inputs, targets, epochs=5)
+
+        # DataLoader with batch_size = dataset_size (single batch per epoch)
+        ds = Dataset(inputs, targets)
+        loader = DataLoader(ds, batch_size=2)
+        h2 = trainer2.fit(loader, epochs=5)
+
+        # Same number of epochs
+        assert len(h1["loss"]) == len(h2["loss"])
+
+    def test_dataloader_with_shuffled_training(self):
+        """Training with shuffled DataLoader works and reduces loss."""
+        layer = Linear(1, 1)
+        layer.neurons[0].weights[0] = Parameter(0.0)
+        layer.neurons[0].bias = Parameter(0.0)
+
+        opt = SGD(layer.parameters(), lr=0.05)
+        trainer = Trainer(layer, mse_loss, opt)
+
+        inputs = [[Value(x)] for x in [0.0, 1.0, 2.0, 3.0]]
+        targets = [[Value(2 * x + 1)] for x in [0.0, 1.0, 2.0, 3.0]]
+        ds = Dataset(inputs, targets)
+        loader = DataLoader(ds, batch_size=2, shuffle=True, seed=42)
+
+        history = trainer.fit(loader, epochs=200)
+        assert history["loss"][-1] < history["loss"][0]
+
+    def test_dataloader_batch_size_1(self):
+        """Training with batch_size=1 works."""
+        layer = Linear(1, 1)
+        layer.neurons[0].weights[0] = Parameter(0.0)
+        layer.neurons[0].bias = Parameter(0.0)
+
+        opt = SGD(layer.parameters(), lr=0.05)
+        trainer = Trainer(layer, mse_loss, opt)
+
+        inputs = [[Value(x)] for x in [0.0, 1.0, 2.0]]
+        targets = [[Value(2 * x + 1)] for x in [0.0, 1.0, 2.0]]
+        ds = Dataset(inputs, targets)
+        loader = DataLoader(ds, batch_size=1)
+
+        history = trainer.fit(loader, epochs=100)
+        assert history["loss"][-1] < history["loss"][0]
+
+    def test_dataloader_epoch_count(self):
+        """History length matches epoch count with DataLoader."""
+        layer = Linear(1, 1)
+        opt = SGD(layer.parameters(), lr=0.01)
+        trainer = Trainer(layer, mse_loss, opt)
+
+        ds = _make_dataset_for_dataloader(5)
+        loader = DataLoader(ds, batch_size=2)
+
+        history = trainer.fit(loader, epochs=7)
+        assert len(history["loss"]) == 7
+
+    def test_dataloader_drop_last(self):
+        """Training with drop_last works correctly."""
+        layer = Linear(1, 1)
+        opt = SGD(layer.parameters(), lr=0.01)
+        trainer = Trainer(layer, mse_loss, opt)
+
+        inputs = [[Value(float(i))] for i in range(7)]
+        targets = [[Value(float(i))] for i in range(7)]
+        ds = Dataset(inputs, targets)
+        loader = DataLoader(ds, batch_size=3, drop_last=True)
+
+        # len should be floor(7/3) = 2
+        assert len(loader) == 2
+
+        history = trainer.fit(loader, epochs=3)
+        assert len(history["loss"]) == 3
+
+    def test_dataloader_eval_still_works(self):
+        """Direct evaluate() still works alongside DataLoader training."""
+        layer = Linear(2, 1)
+        opt = SGD(layer.parameters(), lr=0.01)
+        trainer = Trainer(layer, mse_loss, opt)
+
+        inputs = [[Value(1.0), Value(2.0)], [Value(3.0), Value(4.0)]]
+        targets = [[Value(5.0)], [Value(11.0)]]
+
+        # Evaluate before training
+        loss_before = trainer.evaluate(inputs, targets)["loss"][0]
+
+        # Train with DataLoader
+        ds = Dataset(inputs, targets)
+        loader = DataLoader(ds, batch_size=2)
+        trainer.fit(loader, epochs=50)
+
+        # Evaluate after training
+        loss_after = trainer.evaluate(inputs, targets)["loss"][0]
+        assert loss_after < loss_before
+
+
+def _make_dataset_for_dataloader(n):
+    """Helper to create a Dataset for DataLoader tests."""
+    inputs = [[float(i)] for i in range(n)]
+    targets = [[float(i * 2)] for i in range(n)]
+    return Dataset(inputs, targets)

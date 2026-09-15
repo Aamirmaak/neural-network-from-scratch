@@ -17,11 +17,12 @@ Design Decisions:
     D40: Training data as parallel lists of inputs and targets.
     D41: History records per-epoch mean loss.
     D42: Evaluation computes loss without modifying parameters.
+    D45: DataLoader integration — per-sample training within batches preserved.
 """
 
 from __future__ import annotations
 
-from typing import Any, Callable, Dict, List, Sequence
+from typing import Any, Callable, Dict, List, Sequence, Union
 
 from neuralearn.value import Value
 from neuralearn.parameter import Parameter
@@ -32,6 +33,14 @@ class Trainer:
 
     Orchestrates the training lifecycle: forward → loss → backward →
     step → zero_grad, repeated for a configurable number of epochs.
+
+    Supports two data formats:
+    - Direct: fit(inputs, targets, epochs=100)
+    - DataLoader: fit(dataloader, epochs=100)
+
+    When using a DataLoader, training is still per-sample within each
+    batch (D39/D45). The DataLoader controls iteration grouping and
+    optional shuffling.
 
     Args:
         model: A Module (or any object with __call__, parameters(), zero_grad()).
@@ -83,21 +92,25 @@ class Trainer:
 
     def fit(
         self,
-        inputs: Sequence[Sequence[Any]],
-        targets: Sequence[Any],
+        data: Union[Sequence[Sequence[Any]], Any],
+        targets: Sequence[Any] = None,
         epochs: int = 100,
     ) -> Dict[str, List[float]]:
         """Train the model on the provided data.
+
+        Supports two calling conventions:
+
+        1. Direct lists:  fit(inputs, targets, epochs=100)
+        2. DataLoader:    fit(dataloader, epochs=100)
 
         For each epoch, iterates over all samples and performs:
             forward → loss → backward → optimizer.step → zero_grad
 
         Args:
-            inputs: List of input sequences. Each input is passed to model().
-                Example: [[Value(1.0), Value(2.0)], [Value(3.0), Value(4.0)]]
-            targets: List of target values/sequences. Each target is passed
-                to loss_fn alongside the model's prediction.
-                Example: [Value(5.0)] or [[Value(5.0)], [Value(11.0)]]
+            data: Either a list of input sequences (direct mode) or a
+                DataLoader instance (DataLoader mode).
+            targets: List of target values/sequences (required in direct mode,
+                ignored in DataLoader mode).
             epochs: Number of training epochs (must be >= 1).
 
         Returns:
@@ -106,11 +119,26 @@ class Trainer:
 
         Raises:
             ValueError: If epochs < 1.
-            ValueError: If inputs and targets have different lengths.
             ValueError: If inputs is empty.
+            ValueError: If inputs and targets have different lengths (direct mode).
         """
         if epochs < 1:
             raise ValueError(f"epochs must be >= 1, got {epochs}")
+
+        # Detect DataLoader vs direct mode
+        from neuralearn.dataloaders import DataLoader
+        if isinstance(data, DataLoader):
+            return self._fit_dataloader(data, epochs)
+        else:
+            return self._fit_direct(data, targets, epochs)
+
+    def _fit_direct(
+        self,
+        inputs: Sequence[Sequence[Any]],
+        targets: Sequence[Any],
+        epochs: int,
+    ) -> Dict[str, List[float]]:
+        """Train using direct input/target lists (Stage 7 API)."""
         if len(inputs) == 0:
             raise ValueError("inputs must not be empty")
         if len(inputs) != len(targets):
@@ -126,25 +154,41 @@ class Trainer:
             epoch_loss = 0.0
 
             for x, y in zip(inputs, targets):
-                # 1. Forward pass
                 prediction = self.model(x)
-
-                # 2. Loss computation
                 loss = self.loss_fn(prediction, y)
-
-                # 3. Backward pass
                 loss.backward()
-
-                # 4. Parameter update
                 self.optimizer.step()
-
-                # 5. Gradient reset
                 self.optimizer.zero_grad()
-
-                # Accumulate loss for epoch mean
                 epoch_loss += loss.data
 
-            # Record mean loss for this epoch
+            history["loss"].append(epoch_loss / n_samples)
+
+        return history
+
+    def _fit_dataloader(
+        self,
+        dataloader: Any,
+        epochs: int,
+    ) -> Dict[str, List[float]]:
+        """Train using a DataLoader (Stage 8 API).
+
+        Per-sample training within each batch (D39/D45).
+        """
+        history: Dict[str, List[float]] = {"loss": []}
+        n_samples = len(dataloader.dataset)
+
+        for epoch in range(epochs):
+            epoch_loss = 0.0
+
+            for batch_inputs, batch_targets in dataloader:
+                for x, y in zip(batch_inputs, batch_targets):
+                    prediction = self.model(x)
+                    loss = self.loss_fn(prediction, y)
+                    loss.backward()
+                    self.optimizer.step()
+                    self.optimizer.zero_grad()
+                    epoch_loss += loss.data
+
             history["loss"].append(epoch_loss / n_samples)
 
         return history
@@ -163,8 +207,6 @@ class Trainer:
         Args:
             inputs: List of input sequences (same format as fit()).
             targets: List of target values/sequences (same format as fit()).
-            epochs: Number of evaluation passes (default 1). For single
-                evaluation, use 1.
 
         Returns:
             Dictionary with key "loss" mapping to a list of per-pass
@@ -187,7 +229,6 @@ class Trainer:
         total_loss = 0.0
 
         for x, y in zip(inputs, targets):
-            # Forward pass only — no backward, no step, no zero_grad
             prediction = self.model(x)
             loss = self.loss_fn(prediction, y)
             total_loss += loss.data

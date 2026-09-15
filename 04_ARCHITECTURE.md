@@ -2,13 +2,13 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 7 IN PROGRESS
+**Status:** Stage 8 IN PROGRESS
 
 ## Overview
 
 This document describes the architecture of the neural-network framework. The architecture is designed for educational clarity, correctness, and modularity.
 
-**Current State:** Stage 7 training engine implemented and validated. Trainer class with fit/evaluate API. Per-sample training lifecycle: forward → loss → backward → step → zero_grad. History tracking, input validation. 354+ tests passing.
+**Current State:** Stage 8 Dataset & DataLoader implemented. Dataset for paired storage, DataLoader with batching/shuffling/seed/drop_last. Trainer accepts DataLoader. 394+ tests passing.
 
 ## Conceptual Architecture
 
@@ -301,6 +301,38 @@ class Trainer:
         ...
 ```
 
+### Dataset (Stage 8 — Implemented)
+
+**Purpose:** Store paired input/target data with validation.
+
+**Design Decision (D43):** Dataset stores references to input/target lists (no copying). Validates lengths match at construction. Supports Python sequence indexing.
+
+```python
+class Dataset:
+    def __init__(self, inputs, targets):
+        # inputs: list of input sequences
+        # targets: list of target values/sequences
+        # Validates len(inputs) == len(targets)
+
+    def __len__(self): ...
+    def __getitem__(self, idx): ...  # returns (input, target)
+```
+
+### DataLoader (Stage 8 — Implemented)
+
+**Purpose:** Iterate over a Dataset in batches with optional shuffling.
+
+**Design Decision (D44):** DataLoader yields `(batch_inputs, batch_targets)` tuples. Per-sample training within each batch (D39 preserved). Deterministic shuffling via explicit seed.
+
+```python
+class DataLoader:
+    def __init__(self, dataset, batch_size, shuffle=False, drop_last=False, seed=None):
+        ...
+
+    def __iter__(self): ...   # yields (batch_inputs, batch_targets)
+    def __len__(self): ...    # ceil(n/batch_size) or floor(n/batch_size)
+```
+
 ### Experiments
 
 **Purpose:** Demonstrate and investigate training behavior.
@@ -418,6 +450,8 @@ neuralearn/
 ├── losses.py            # MSE, Binary Cross-Entropy
 ├── optimizers.py        # SGD, MomentumSGD, Adam
 ├── training.py          # Training engine (Trainer)
+├── datasets.py          # Dataset abstraction (Stage 8)
+├── dataloaders.py       # DataLoader abstraction (Stage 8)
 └── visualization.py     # Plotting and visualization (PLANNED)
 ```
 

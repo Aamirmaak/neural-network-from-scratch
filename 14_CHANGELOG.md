@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 7 IN PROGRESS
+**Status:** Stage 8 IN PROGRESS
 
 ## Overview
 
@@ -16,6 +16,12 @@ This document records changes to the project.
 
 ### Added
 
+- Stage 8: Dataset & DataLoader:
+  - `src/neuralearn/datasets.py` — Dataset class for paired input/target storage
+  - `src/neuralearn/dataloaders.py` — DataLoader class with batching, shuffling, seed, drop_last
+  - `tests/test_dataset.py` — 25 dataset tests
+  - `tests/test_dataloader.py` — 32 dataloader tests
+  - Trainer.fit() now accepts DataLoader (backward-compatible with direct lists)
 - Stage 7: Training engine:
   - `src/neuralearn/training.py` — Trainer class with fit/evaluate API
   - `tests/test_training.py` — 40 training engine tests
@@ -34,7 +40,7 @@ This document records changes to the project.
 
 ### Changed
 
-- Version bumped from 0.7.0 to 0.8.0
+- Version bumped from 0.8.0 to 0.9.0
 
 ### Deprecated
 
@@ -68,6 +74,7 @@ This document records changes to the project.
 
 | Version | Date | Stage | Description |
 |---------|------|-------|-------------|
+| 0.9.0 | 2026-09-16 | 8 | Dataset, DataLoader, batching/shuffling/seed, Trainer integration, 63 tests, D43-D47 |
 | 0.8.0 | 2026-09-16 | 7 | Trainer class with fit/evaluate, per-sample lifecycle, history, 40 tests, D38-D42 |
 | 0.7.0 | 2026-09-15 | 6 | SGD, MomentumSGD, Adam optimizers, 44 tests, D34-D37 |
 | 0.6.0 | 2026-09-15 | 5 | MSE, BCE losses, 58 tests, D31-D33 |

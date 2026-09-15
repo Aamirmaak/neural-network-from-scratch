@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 7 IN PROGRESS
+**Status:** Stage 8 IN PROGRESS
 
 ## Overview
 
@@ -1112,6 +1112,150 @@ Evaluation/inference must not alter trainable state. This is a fundamental disti
 
 ---
 
+## Stage 8 Decisions
+
+### D43: Dataset Stores References (No Copy)
+
+**Date:** Stage 8  
+**Status:** ACCEPTED
+
+### Decision
+
+Dataset retains references to input/target lists without copying. Validates lengths match at construction.
+
+### Context
+
+Stage 8 introduces a Dataset abstraction. The alternative is deep-copying data, which wastes memory and is unnecessary for an educational framework.
+
+### Reasoning
+
+- No memory overhead from copying
+- Faster construction
+- Users are responsible for not mutating data after creating Dataset
+- Consistent with Python conventions (lists store references)
+- Educational clarity: Dataset is a lightweight container, not an immutable data structure
+
+### Consequences
+
+- Dataset is a thin wrapper around existing lists
+- Users must not modify input/target lists after creating Dataset if they want deterministic behavior
+- Simple and fast
+
+---
+
+### D44: DataLoader Yields (batch_inputs, batch_targets) Tuples
+
+**Date:** Stage 8  
+**Status:** ACCEPTED
+
+### Decision
+
+DataLoader yields `(batch_inputs, batch_targets)` tuples where each is a list of individual samples.
+
+### Context
+
+The scalar model processes individual samples. DataLoader provides batching for iteration grouping, not for vectorized computation.
+
+### Reasoning
+
+- Matches existing scalar architecture (per-sample training)
+- Each batch is a list of individual input/target pairs
+- Trainer unpacks and processes each sample within the batch
+- No Tensor conversion needed
+- Batching controls iteration grouping and shuffling, not optimizer update frequency
+
+### Consequences
+
+- DataLoader integrates cleanly with existing Trainer
+- No changes to model, loss, or optimizer interfaces
+- Batch size primarily affects iteration structure
+
+---
+
+### D45: Per-Sample Training Within Batches (D39 Preserved)
+
+**Date:** Stage 8  
+**Status:** ACCEPTED
+
+### Decision
+
+When using DataLoader, the Trainer still processes one sample at a time. For each sample: forward → loss → backward → optimizer.step → zero_grad. Batching controls iteration grouping, not optimizer update frequency.
+
+### Context
+
+The scalar architecture has no batched matrix operations. Per-sample training is the only approach genuinely supported. Accumulating gradients across samples before a single optimizer.step() would require loss reduction scaling and is a future optimization.
+
+### Reasoning
+
+- Consistent with D39 (per-sample training)
+- No fake vectorization
+- Simple, correct, and educational
+- True batch-level gradient accumulation can be added in later stages
+
+### Consequences
+
+- Each sample within a batch triggers a full training lifecycle
+- optimizer.step() is called after every sample, not after every batch
+- Batch size primarily affects data ordering and iteration grouping
+
+---
+
+### D46: Deterministic Shuffling via Explicit Seed
+
+**Date:** Stage 8  
+**Status:** ACCEPTED
+
+### Decision
+
+DataLoader supports optional shuffling via `shuffle=True` with an explicit `seed` parameter. Each new iteration epoch generates a fresh permutation from the seed using a dedicated random.Random instance.
+
+### Context
+
+Shuffling is essential for stochastic training. Deterministic reproducibility is essential for testing and debugging.
+
+### Reasoning
+
+- Explicit seed avoids dependence on global random state
+- Dedicated random.Random instance per DataLoader avoids polluting global state
+- Each iteration generates a fresh permutation from the seed + epoch counter, so repeated iteration produces different orderings (expected training behavior)
+- Two DataLoaders with the same seed produce the same initial ordering
+
+### Consequences
+
+- Deterministic and reproducible
+- No global random state pollution
+- Each epoch gets a fresh shuffle (standard training behavior)
+
+---
+
+### D47: Dataset/DataLoader in Separate Modules
+
+**Date:** Stage 8  
+**Status:** ACCEPTED
+
+### Decision
+
+Dataset is in `datasets.py` and DataLoader is in `dataloaders.py` (separate modules).
+
+### Context
+
+The project convention is one major abstraction per module (value.py, parameter.py, layers.py, losses.py, optimizers.py, training.py).
+
+### Reasoning
+
+- Consistent with existing module structure
+- Each module has a clear single responsibility
+- Easy to find and understand
+- Can be imported independently
+
+### Consequences
+
+- Two new source files instead of one
+- Clearer organization
+- Consistent with project conventions
+
+---
+
 ## Decision Summary
 
 | ID | Decision | Status |
@@ -1158,6 +1302,11 @@ Evaluation/inference must not alter trainable state. This is a fundamental disti
 | D40 | Training data as list of (input, target) pairs | ACCEPTED |
 | D41 | Per-epoch history (mean loss) | ACCEPTED |
 | D42 | Evaluation without parameter modification | ACCEPTED |
+| D43 | Dataset stores references (no copy) | ACCEPTED |
+| D44 | DataLoader yields (batch_inputs, batch_targets) tuples | ACCEPTED |
+| D45 | Per-sample training within batches (D39 preserved) | ACCEPTED |
+| D46 | Deterministic shuffling via explicit seed | ACCEPTED |
+| D47 | Dataset/DataLoader in separate modules | ACCEPTED |
 
 ---
 
