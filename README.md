@@ -1,6 +1,6 @@
 # Project 001 — Neural Network From Scratch
 
-**Status:** Stage 6 In Progress
+**Status:** Stage 7 In Progress
 
 ## Overview
 
@@ -8,7 +8,7 @@ An educational deep-learning framework built from first principles to demonstrat
 
 This project implements a small but complete neural-network training system without using any existing deep-learning frameworks or automatic-differentiation libraries. The goal is to build strong AI/ML engineering fundamentals through real implementation work.
 
-**Current State:** Stage 6 optimizers implemented. SGD, MomentumSGD, Adam. 354 tests passing. Proceeding to architect review.
+**Current State:** Stage 7 training engine implemented. Trainer class with fit/evaluate API. Per-sample training lifecycle. 394 tests passing. Proceeding to architect review.
 
 ## Problem / Motivation
 
@@ -53,8 +53,7 @@ The completed project will be a small deep-learning framework supporting:
 | Layers | IMPLEMENTED | Linear, ReLU, Tanh layers |
 | Losses | IMPLEMENTED | MSE, Binary Cross-Entropy |
 | Optimizers | IMPLEMENTED | SGD, Momentum, Adam |
-| Optimizers | PLANNED | SGD, Momentum, Adam |
-| Training Loop | PLANNED | Forward, backward, update cycle |
+| Training Engine | IMPLEMENTED | Trainer with fit/evaluate lifecycle |
 | Experiments | PLANNED | XOR, regression, controlled comparisons |
 | Visualization | PLANNED | Training curves, decision boundaries |
 
@@ -145,7 +144,8 @@ neural-network-from-scratch/
 │       ├── parameter.py
 │       ├── layers.py
 │       ├── losses.py
-│       └── optimizers.py
+│       ├── optimizers.py
+│       └── training.py
 ├── tests/
 ├── experiments/
 ├── configs/
@@ -169,14 +169,15 @@ neural-network-from-scratch/
 
 ## Current Milestone
 
-**Stage 6 — Optimizers**
+**Stage 7 — Training Engine**
 
-Stage 6 implements parameter-update optimizers:
-- `SGD` — Vanilla stochastic gradient descent
-- `MomentumSGD` — SGD with momentum
-- `Adam` — Adaptive moment estimation
-- Deterministic learning verification
-- 354 passing tests (310 existing + 44 new)
+Stage 7 implements the training engine:
+- `Trainer` — connects model, loss, and optimizer
+- `fit()` — training lifecycle with configurable epochs
+- `evaluate()` — inference-only loss computation
+- Training history with per-epoch mean loss
+- Input validation and clear error messages
+- 394 passing tests (354 existing + 40 new)
 
 ## Future Roadmap
 

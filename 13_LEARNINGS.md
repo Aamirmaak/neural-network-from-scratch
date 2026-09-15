@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 6 IN PROGRESS
+**Status:** Stage 7 IN PROGRESS
 
 ## Overview
 
@@ -456,6 +456,40 @@ This is the subgradient of the projection onto [eps, 1-eps].
 #### Engineering Insight
 
 Reusing existing differentiable operations (like relu) to build new differentiable operations is powerful. It avoids implementing new backward rules and ensures consistency with the existing gradient-checking infrastructure.
+
+---
+
+### BCE Requires Sigmoid Activation Before the Loss
+
+**Date:** 2026-09-16  
+**Stage:** 7  
+**Related Code:** `tests/test_training.py::TestBCETraining`
+
+#### Initial Understanding
+
+I initially wrote a BCE training test using raw Linear output directly as input to binary_cross_entropy, expecting the loss to decrease.
+
+#### What Was Observed
+
+The BCE loss was stuck at a constant value (8.059) and did not decrease across 200 epochs. The model parameters were not updating.
+
+#### What Was Learned
+
+BCE expects predictions to be probabilities in (0, 1). Raw Linear output can be any real number. The BCE clipping mechanism (`eps + (p-eps).relu() - (p-(1-eps)).relu()`) clips predictions to [eps, 1-eps], but when raw outputs are far outside this range, the gradient through the clipping is 0 (dead zone). This means:
+
+- If raw output < eps: gradient = 0 (clipped to eps)
+- If raw output > 1-eps: gradient = 0 (clipped to 1-eps)
+- Only in (eps, 1-eps) does the gradient flow
+
+The solution is to apply sigmoid to the raw output before passing to BCE, converting any real number to (0, 1). This is the standard pattern: `model → sigmoid → BCE`.
+
+#### Mathematical Insight
+
+sigmoid(x) = 1 / (1 + exp(-x)) maps (-∞, ∞) → (0, 1). This is the natural "probability output" for binary classification. The gradient of BCE with sigmoid input simplifies to `pred - target`, which is numerically stable and always nonzero for wrong predictions.
+
+#### Engineering Insight
+
+Loss functions assume specific input ranges. MSE assumes any real number; BCE assumes (0, 1). The activation function before the loss must produce values in the expected range. This is a fundamental design pattern in neural networks, not an implementation detail.
 
 ---
 

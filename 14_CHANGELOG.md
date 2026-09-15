@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 6 IN PROGRESS
+**Status:** Stage 7 IN PROGRESS
 
 ## Overview
 
@@ -16,6 +16,9 @@ This document records changes to the project.
 
 ### Added
 
+- Stage 7: Training engine:
+  - `src/neuralearn/training.py` — Trainer class with fit/evaluate API
+  - `tests/test_training.py` — 40 training engine tests
 - Stage 6: Optimizers:
   - `src/neuralearn/optimizers.py` — SGD, MomentumSGD, Adam
   - `tests/test_optimizers.py` — 44 optimizer tests
@@ -27,11 +30,11 @@ This document records changes to the project.
   - `src/neuralearn/layers.py` — Module, Neuron, Linear, ReLU, Tanh
   - `tests/test_parameter.py` — 15 parameter tests
   - `tests/test_layers.py` — 42 layer tests including gradient checking
-- Updated documentation files (03, 04, 07, 10)
+- Updated documentation files (03, 04, 07, 10, 11, 13, 14)
 
 ### Changed
 
-- Version bumped from 0.5.0 to 0.7.0
+- Version bumped from 0.7.0 to 0.8.0
 
 ### Deprecated
 
@@ -65,6 +68,7 @@ This document records changes to the project.
 
 | Version | Date | Stage | Description |
 |---------|------|-------|-------------|
+| 0.8.0 | 2026-09-16 | 7 | Trainer class with fit/evaluate, per-sample lifecycle, history, 40 tests, D38-D42 |
 | 0.7.0 | 2026-09-15 | 6 | SGD, MomentumSGD, Adam optimizers, 44 tests, D34-D37 |
 | 0.6.0 | 2026-09-15 | 5 | MSE, BCE losses, 58 tests, D31-D33 |
 | 0.5.0 | 2026-09-15 | 4 | Parameter, Module, Neuron, Linear, ReLU, Tanh, 57 tests, D27-D30 |

@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 6 IN PROGRESS
+**Status:** Stage 7 IN PROGRESS
 
 ## Overview
 
@@ -966,6 +966,152 @@ Parameter.zero_grad() already exists and correctly resets gradients. Duplicating
 
 ---
 
+## Stage 7 Decisions
+
+### D38: Trainer as Class Connecting Model, Loss, Optimizer
+
+**Date:** Stage 7  
+**Status:** ACCEPTED
+
+### Decision
+
+Implement a `Trainer` class that accepts `model`, `loss_fn`, and `optimizer` at construction, providing `fit()` and `evaluate()` methods.
+
+### Context
+
+Stage 7 needs to connect the existing components (Module, loss functions, optimizers) into a reusable training API. The alternative is a standalone training function or a more complex framework.
+
+### Reasoning
+
+- Class holds references to model, loss_fn, optimizer — natural grouping
+- `fit()` runs the training loop with configurable epochs
+- `evaluate()` provides inference-only loss computation
+- Matches the conceptual API: trainer orchestrates the training lifecycle
+- Simple, readable, and testable
+
+### Consequences
+
+- Training API is clean: `trainer.fit(inputs, targets, epochs=100)`
+- Evaluation is separate: `trainer.evaluate(inputs, targets)`
+- Trainer does not own model state — model owns parameters, optimizer owns update state
+
+---
+
+### D39: Per-Sample Training (No Batching)
+
+**Date:** Stage 7  
+**Status:** ACCEPTED
+
+### Decision
+
+The training loop processes one sample at a time. For each sample: forward → loss → backward → optimizer.step → optimizer.zero_grad.
+
+### Context
+
+The scalar autodiff framework processes individual scalar values. There is no Tensor abstraction or batched matrix operations. Per-sample training is the only approach genuinely supported by the current architecture.
+
+### Reasoning
+
+- Consistent with scalar Value architecture
+- No fake vectorization or batching abstraction
+- Simple and correct for the current scope
+- Dataset/DataLoader batching belongs to Stage 8
+- Gradient accumulation across samples can be added later if needed
+
+### Consequences
+
+- Each sample triggers its own backward pass and parameter update
+- Gradient reset (zero_grad) happens after each sample
+- Training is correct but slower than batched training (acceptable for educational scope)
+
+---
+
+### D40: Training Data as List of (input, target) Pairs
+
+**Date:** Stage 7  
+**Status:** ACCEPTED
+
+### Decision
+
+Training data is represented as parallel lists: `inputs` (list of input sequences) and `targets` (list of target values/sequences).
+
+### Context
+
+Stage 7 needs a simple data representation. A proper Dataset/DataLoader abstraction belongs to Stage 8.
+
+### Reasoning
+
+- Parallel lists are the simplest Python data structure
+- Compatible with `zip(inputs, targets)` iteration
+- No new classes or abstractions needed
+- Input format matches existing layer APIs: `model([Value(1.0), Value(2.0)])`
+- Target format matches existing loss APIs: `mse_loss(predictions, [target_value])`
+
+### Consequences
+
+- Users provide `inputs = [[1.0, 2.0], [3.0, 4.0]]` and `targets = [5.0, 11.0]`
+- No random access, shuffling, or batching — those belong to Stage 8
+- Simple API suitable for small educational datasets
+
+---
+
+### D41: Per-Epoch History (Mean Loss)
+
+**Date:** Stage 7  
+**Status:** ACCEPTED
+
+### Decision
+
+Training history records the mean loss across all samples for each epoch: `{"loss": [mean_loss_epoch_0, mean_loss_epoch_1, ...]}`.
+
+### Context
+
+Training needs to return useful information for monitoring and debugging. The history structure should be simple, deterministic, and easy to plot later.
+
+### Reasoning
+
+- Mean loss per epoch is the standard training metric
+- Simple list of floats — easy to inspect, log, and plot
+- No visualization dependency
+- Deterministic: same data + same model = same history
+
+### Consequences
+
+- History is a dict with key "loss" mapping to a list of floats
+- Loss values are ordinary Python floats (not Values)
+- No per-sample loss tracking (too verbose for this stage)
+
+---
+
+### D42: Evaluation Without Parameter Modification
+
+**Date:** Stage 7  
+**Status:** ACCEPTED
+
+### Decision
+
+`evaluate()` performs forward passes and computes loss but does NOT call backward(), optimizer.step(), or zero_grad(). Parameters are not modified.
+
+### Context
+
+Evaluation/inference must not alter trainable state. This is a fundamental distinction from training.
+
+### Reasoning
+
+- Evaluation is loss computation only
+- No gradient computation needed (no backward)
+- No parameter updates (no step)
+- No gradient accumulation (no zero_grad)
+- Returns same history format for consistency
+
+### Consequences
+
+- Calling evaluate() before/after training gives the same loss for the same model state
+- evaluate() is side-effect-free with respect to model parameters
+- Users can monitor validation loss during training by calling evaluate() separately
+
+---
+
 ## Decision Summary
 
 | ID | Decision | Status |
@@ -1007,6 +1153,11 @@ Parameter.zero_grad() already exists and correctly resets gradients. Duplicating
 | D35 | Optimizers accept List[Parameter] | ACCEPTED |
 | D36 | State keyed by id() | ACCEPTED |
 | D37 | zero_grad delegates to Parameter | ACCEPTED |
+| D38 | Trainer as class connecting model, loss, optimizer | ACCEPTED |
+| D39 | Per-sample training (no batching) | ACCEPTED |
+| D40 | Training data as list of (input, target) pairs | ACCEPTED |
+| D41 | Per-epoch history (mean loss) | ACCEPTED |
+| D42 | Evaluation without parameter modification | ACCEPTED |
 
 ---
 

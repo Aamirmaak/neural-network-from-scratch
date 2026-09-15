@@ -19,8 +19,8 @@ Stage 2  — Extended Autodiff Operations          ✓ COMPLETE
 Stage 3  — Gradient Checking                    ✓ COMPLETE
 Stage 4  — Parameters and Layers            ✓ COMPLETE
 Stage 5  — Loss Functions                    ✓ COMPLETE
-Stage 6  — Optimizers
-Stage 7  — Training Infrastructure
+Stage 6  — Optimizers                      ✓ COMPLETE
+Stage 7  — Training Engine
 Stage 8  — XOR Experiment
 Stage 9  — Nonlinear Regression
 Stage 10 — Controlled Experiments
@@ -352,34 +352,41 @@ Implement optimizers that update parameters based on gradients.
 
 ---
 
-## Stage 7 — Training Infrastructure
+## Stage 7 — Training Engine
 
-**Status:** PLANNED  
+**Status:** IN PROGRESS  
 **Dependencies:** Stages 4, 5, 6
 
 ### Objective
 
-Implement the training loop and supporting infrastructure.
+Implement a reusable training engine that connects model, loss, and optimizer into a complete training lifecycle.
 
 ### Major Work
 
-- Implement training loop
-- Implement metrics computation
-- Implement logging
-- Implement checkpointing where appropriate
+- Implement Trainer class with fit() and evaluate() methods
+- Implement training lifecycle: forward → loss → backward → step → zero_grad
+- Support configurable epochs with validation
+- Return training history with per-epoch loss values
+- Provide evaluation method that does not modify parameters
+- Validate inputs and provide clear error messages
 
 ### Expected Learning
 
-- How training loop orchestrates components
-- Why gradient reset is necessary
-- How metrics track training progress
+- How training loop orchestrates model, loss, and optimizer components
+- Why gradient reset is necessary between samples/epochs
+- How training history enables monitoring and debugging
+- The distinction between training (parameter-updating) and evaluation (inference-only)
 
 ### Acceptance Criteria
 
-- [ ] Training loop completes forward/backward/update cycle
-- [ ] Metrics are computed correctly
-- [ ] Training produces decreasing loss
-- [ ] Code is modular and testable
+- [x] Trainer connects model, loss_fn, optimizer
+- [x] Training loop completes forward/backward/update/zero_grad cycle
+- [x] Configurable epochs with validation
+- [x] Loss history returned as dict with per-epoch mean loss
+- [x] Evaluation computes loss without modifying parameters
+- [x] Deterministic training on fixed data
+- [x] Simple learning experiment demonstrates loss reduction
+- [x] Code is modular and testable
 
 ### Expected Artifacts
 

@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 6 IN PROGRESS
+**Status:** Stage 7 IN PROGRESS
 
 ## Overview
 
@@ -109,13 +109,11 @@ This document defines the testing strategy for ensuring correctness of the neura
 tests/
 ├── test_value.py           # Value class tests (Stages 1 & 2)
 ├── test_gradient_check.py  # Gradient-checking tests (Stage 3)
-├── test_operations.py      # Arithmetic operation tests (PLANNED)
-├── test_autodiff.py        # Autodiff tests (PLANNED)
-├── test_parameter.py       # Parameter tests (Stage 4 — COMPLETE)
-├── test_layers.py          # Layer tests (Stage 4 — COMPLETE)
-├── test_losses.py          # Loss function tests (Stage 5 — IN PROGRESS)
-├── test_optimizers.py      # Optimizer tests (PLANNED)
-├── test_training.py        # Training loop tests (PLANNED)
+├── test_parameter.py       # Parameter tests (Stage 4)
+├── test_layers.py          # Layer tests (Stage 4)
+├── test_losses.py          # Loss function tests (Stage 5)
+├── test_optimizers.py      # Optimizer tests (Stage 6)
+├── test_training.py        # Training engine tests (Stage 7)
 └── test_integration.py     # Integration tests (PLANNED)
 ```
 

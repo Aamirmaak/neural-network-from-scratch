@@ -2,13 +2,13 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 6 IN PROGRESS
+**Status:** Stage 7 IN PROGRESS
 
 ## Overview
 
 This document describes the architecture of the neural-network framework. The architecture is designed for educational clarity, correctness, and modularity.
 
-**Current State:** Stage 6 optimizers implemented and validated. SGD, MomentumSGD, Adam with gradient checking and integration tests. 354 tests passing. Training engine planned but not yet implemented.
+**Current State:** Stage 7 training engine implemented and validated. Trainer class with fit/evaluate API. Per-sample training lifecycle: forward → loss → backward → step → zero_grad. History tracking, input validation. 354+ tests passing.
 
 ## Conceptual Architecture
 
@@ -266,18 +266,40 @@ class ReLU(Module):
 - Apply updates to parameters
 - Manage state (momentum, adaptive rates)
 
-### Training Loop
+### Training Loop (Stage 7 — Implemented)
 
-**Purpose:** Orchestrate the training process.
+**Purpose:** Orchestrate the training process by connecting model, loss, and optimizer.
+
+**Design Decision (D38):** Trainer is a class that accepts model, loss_fn, and optimizer at construction. Training is per-sample (no batching). The lifecycle for each sample is: forward → loss → backward → optimizer.step → zero_grad.
 
 **Responsibilities:**
-- Forward pass
-- Loss computation
-- Backward pass
-- Parameter update
-- Gradient reset
-- Metrics computation
-- Logging
+- Connect model, loss function, and optimizer
+- Execute training lifecycle for configurable number of epochs
+- Track per-epoch mean loss in training history
+- Evaluate model loss without updating parameters
+- Validate inputs and provide clear error messages
+
+```python
+class Trainer:
+    def __init__(self, model, loss_fn, optimizer):
+        ...
+
+    def fit(self, inputs, targets, epochs=100):
+        # Per-sample training lifecycle
+        for epoch in range(epochs):
+            for x, y in zip(inputs, targets):
+                pred = self.model(x)        # forward
+                loss = self.loss_fn(pred, y) # loss
+                loss.backward()              # backward
+                self.optimizer.step()        # update
+                self.optimizer.zero_grad()   # reset
+            history["loss"].append(mean_loss)
+        return history
+
+    def evaluate(self, inputs, targets):
+        # No backward, no step, no zero_grad
+        ...
+```
 
 ### Experiments
 
@@ -390,14 +412,13 @@ class ReLU(Module):
 neuralearn/
 ├── __init__.py          # Package initialization
 ├── value.py             # Value/Tensor abstraction
-├── operations.py        # Arithmetic operations and backward functions
-├── autodiff.py          # Topological sort and backward pass
 ├── gradient_check.py    # Numerical gradient checking
 ├── parameter.py         # Trainable parameters
-├── layers.py            # Linear, ReLU, Tanh, Sequential
+├── layers.py            # Linear, ReLU, Tanh, Module
 ├── losses.py            # MSE, Binary Cross-Entropy
-├── training.py          # Training loop
-└── visualization.py     # Plotting and visualization
+├── optimizers.py        # SGD, MomentumSGD, Adam
+├── training.py          # Training engine (Trainer)
+└── visualization.py     # Plotting and visualization (PLANNED)
 ```
 
 ## Data Flow
@@ -463,19 +484,17 @@ Operations like log and exp may require careful implementation to avoid overflow
 ### Unit Tests
 
 Each module has corresponding tests:
-- `tests/test_value.py`
-- `tests/test_operations.py`
-- `tests/test_autodiff.py`
-- `tests/test_gradient_check.py`
-- `tests/test_parameter.py`
-- `tests/test_layers.py`
-- `tests/test_losses.py`
-- `tests/test_optimizers.py`
-- `tests/test_training.py`
+- `tests/test_value.py` — Value class tests (Stages 1 & 2)
+- `tests/test_gradient_check.py` — Gradient-checking tests (Stage 3)
+- `tests/test_parameter.py` — Parameter tests (Stage 4)
+- `tests/test_layers.py` — Layer tests (Stage 4)
+- `tests/test_losses.py` — Loss function tests (Stage 5)
+- `tests/test_optimizers.py` — Optimizer tests (Stage 6)
+- `tests/test_training.py` — Training engine tests (Stage 7)
 
 ### Integration Tests
 
-- `tests/test_integration.py`: End-to-end training flows
+- `tests/test_integration.py`: End-to-end training flows (PLANNED)
 
 ### Gradient Checking
 
