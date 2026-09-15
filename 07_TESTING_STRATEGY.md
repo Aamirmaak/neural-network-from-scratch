@@ -1,8 +1,8 @@
 # 07 — Testing Strategy
 
 **Project:** Neural Network From Scratch  
-**Version:** 1.0  
-**Status:** Stage 9 COMPLETE
+**Version:** 1.1  
+**Status:** Stage 10 COMPLETE
 
 ## Overview
 

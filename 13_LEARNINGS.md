@@ -617,6 +617,39 @@ The DataLoader batches are for iteration grouping and shuffling, not for gradien
 
 When designing DataLoader integration with a training engine, the critical question is: "Does the DataLoader change the gradient/update semantics?" If yes, it's a major architectural change. If no (as in our case), it's a clean extension that preserves existing behavior.
 
+---
+
+### Visualization as Optional Analysis Layer
+
+**Date:** 2026-09-16  
+**Stage:** 10  
+**Related Code:** `src/neuralearn/visualization.py`
+
+#### Initial Understanding
+
+I initially considered integrating plotting into the Trainer class.
+
+#### What Was Implemented
+
+A separate `visualization.py` module with standalone plotting functions. matplotlib is imported only when visualization functions are called.
+
+#### What Was Learned
+
+Keeping visualization separate is cleaner because:
+1. Core framework has zero visualization dependencies
+2. Plotting functions are pure utilities — they read data and create files
+3. Users who don't need matplotlib aren't affected
+4. The Trainer class stays focused on training, not presentation
+5. Different visualization approaches can be tried without touching core code
+
+The key insight: visualization is a consumer of experiment data, not a producer of it. It belongs in the analysis layer, not the training layer.
+
+#### Engineering Insight
+
+For optional dependencies, use lazy imports (import inside the function). This way the core package works without the dependency, and users get a clear error message if they try to use visualization without matplotlib installed.
+
+---
+
 ### Mathematical Concepts
 
 - Derivatives
@@ -780,8 +813,8 @@ The simplicity means: when someone reads `class Linear(Module)`, they immediatel
 | Mathematical | 6 | 2026-09-15 |
 | Implementation | 5 | 2026-09-15 |
 | ML | 3 | 2026-09-16 |
-| Engineering | 9 | 2026-09-16 |
-| **Total** | **23** | 2026-09-16 |
+| Engineering | 10 | 2026-09-16 |
+| **Total** | **24** | 2026-09-16 |
 
 ---
 

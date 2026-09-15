@@ -1,6 +1,6 @@
 # Project 001 — Neural Network From Scratch
 
-**Status:** Stage 9 Complete
+**Status:** Stage 10 Complete
 
 ## Overview
 
@@ -8,7 +8,7 @@ An educational deep-learning framework built from first principles to demonstrat
 
 This project implements a small but complete neural-network training system without using any existing deep-learning frameworks or automatic-differentiation libraries. The goal is to build strong AI/ML engineering fundamentals through real implementation work.
 
-**Current State:** Stage 9 End-to-End Experiments complete. XOR classification and nonlinear regression experiments demonstrate the framework works. Sigmoid activation layer added. 465 tests passing.
+**Current State:** Stage 10 Visualization & Experiment Analysis complete. Visualization module for training curves, regression fit, classification scatter. 5 plots generated from real experiments. 488 tests passing.
 
 ## Problem / Motivation
 
@@ -58,7 +58,7 @@ The completed project will be a small deep-learning framework supporting:
 | DataLoader | IMPLEMENTED | Batching, shuffling, seed, drop_last |
 | Sigmoid | IMPLEMENTED | Sigmoid activation layer |
 | Experiments | IMPLEMENTED | XOR classification, nonlinear regression |
-| Visualization | PLANNED | Training curves, decision boundaries |
+| Visualization | IMPLEMENTED | Loss curves, regression fit, classification scatter, comparison plots |
 
 ## Architecture Overview
 
@@ -97,6 +97,51 @@ See [04_ARCHITECTURE.md](04_ARCHITECTURE.md) for detailed architecture.
 | Architecture Search | Hidden size, depth, activation | PLANNED |
 
 See [06_EXPERIMENT_PLAN.md](06_EXPERIMENT_PLAN.md) for full experiment details.
+
+## Experiments & Visualization
+
+### Running Experiments
+
+```bash
+# XOR Classification
+python experiments/experiment_a_xor.py
+
+# Nonlinear Regression
+python experiments/experiment_b_regression.py
+```
+
+### Generating Plots
+
+```bash
+# Requires matplotlib: pip install matplotlib
+python experiments/generate_plots.py
+```
+
+### Generated Plots
+
+Plots are saved to `artifacts/plots/`:
+
+| Plot | Description |
+|------|-------------|
+| `xor_loss_curve.png` | XOR training loss over epochs |
+| `xor_accuracy_curve.png` | XOR training accuracy over epochs |
+| `xor_predictions.png` | MLP prediction scatter for XOR |
+| `regression_train_test_loss.png` | Train vs test MSE for regression |
+| `regression_fit.png` | MLP fit vs target function |
+
+### Visualization API
+
+```python
+from neuralearn.visualization import plot_loss, plot_regression_fit
+
+# Plot training loss
+plot_loss(history, title="My Experiment", save_path="loss.png")
+
+# Plot regression fit
+plot_regression_fit(x_train, y_train, x_test, y_test, preds, target_fn=fn)
+```
+
+matplotlib is an optional dependency — core framework works without it.
 
 ## Testing Philosophy
 
@@ -174,13 +219,14 @@ neural-network-from-scratch/
 
 ## Current Milestone
 
-**Stage 9 — End-to-End Experiments**
+**Stage 10 — Visualization & Experiment Analysis**
 
-Stage 9 validates the framework with real experiments:
-- Experiment A: XOR classification — MLP (100%) vs linear (75%)
-- Experiment B: Nonlinear regression — MLP (MSE 0.038) vs linear (MSE 0.268)
-- Sigmoid activation layer added for classification experiments
-- 465 passing tests (457 existing + 8 new Sigmoid tests)
+Stage 10 adds a lightweight visualization layer:
+- `src/neuralearn/visualization.py` — plot_loss, plot_train_test_curve, plot_regression_fit, plot_xor_predictions, plot_comparison, plot_accuracy
+- 5 plots generated from real experiments in `artifacts/plots/`
+- matplotlib is an optional dependency (not required for core framework)
+- 23 visualization tests
+- 488 passing tests total
 
 ## Future Roadmap
 

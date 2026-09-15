@@ -1,8 +1,8 @@
 # 12 — Experiment Log
 
 **Project:** Neural Network From Scratch  
-**Version:** 1.0  
-**Status:** Stage 9 COMPLETE
+**Version:** 1.1  
+**Status:** Stage 10 COMPLETE
 
 ## Overview
 
@@ -101,6 +101,17 @@ None. Both models behaved as expected.
 
 **Hypothesis CONFIRMED.** A linear model cannot learn XOR (gets stuck at 50% accuracy with all outputs ~0.5). A neural network with one hidden layer learns XOR perfectly.
 
+#### Visual Analysis
+
+**Loss curve (`artifacts/plots/xor_loss_curve.png`):**
+The loss curve shows two distinct phases. From epochs 1-200, the loss remains near 0.69 (log(2)), corresponding to random predictions (~50% accuracy). Around epoch 300, the loss begins decreasing rapidly, reaching 0.28 at epoch 400 and continuing to 0.004 by epoch 1000. This S-shaped curve is characteristic of classification training where the model initially struggles to find the decision boundary, then converges quickly once it does.
+
+**Accuracy curve (`artifacts/plots/xor_accuracy_curve.png`):**
+Accuracy mirrors the loss behavior. The model stays at 50-75% accuracy for the first 300 epochs, then jumps to 100% by epoch 400. The rapid transition from 75% to 100% suggests the network found a separating hyperplane in the hidden representation around that point.
+
+**Prediction scatter (`artifacts/plots/xor_predictions.png`):**
+The MLP predictions show clean separation: class 0 inputs map to ~0.003-0.005 and class 1 inputs map to ~0.995-0.996. All predictions are correct with high confidence, indicating the model has learned a robust decision boundary.
+
 #### Reproducibility Notes
 
 Run: `python experiments/experiment_a_xor.py` from project root with `PYTHONPATH=src`.
@@ -193,6 +204,14 @@ The MLP shows some oscillation in loss (epoch 150 spike to 0.12 before recoverin
 #### Conclusion
 
 **Hypothesis CONFIRMED.** The linear model underfits (high MSE). The MLP fits the nonlinear function well (low MSE) with good generalization.
+
+#### Visual Analysis
+
+**Train vs Test loss (`artifacts/plots/regression_train_test_loss.png`):**
+Both training and test MSE decrease rapidly in the first 50 epochs, with the train curve dropping below 0.025 and the test curve below 0.027. The curves remain close throughout training, indicating good generalization with no significant overfitting. The small oscillation at epoch 150 (train MSE spike to 0.12) is visible but recovers quickly. The final gap between train (0.018) and test (0.022) is small relative to the initial values.
+
+**Regression fit (`artifacts/plots/regression_fit.png`):**
+The MLP predictions closely follow the target function sin(x) + 0.1x² across the [-3, 3] range. The model captures both the oscillatory behavior near x=0 and the quadratic growth at the boundaries. Predictions are accurate near x=-1.5 and x=0 but show larger deviation at x=±3, where the training data is sparsest and the function's quadratic term dominates. The linear model (not plotted) would show a straight line that captures only the average trend.
 
 #### Reproducibility Notes
 

@@ -1,0 +1,2 @@
+# Optional dependencies for visualization and experiments
+matplotlib>=3.5

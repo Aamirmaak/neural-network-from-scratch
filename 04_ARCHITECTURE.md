@@ -1,14 +1,14 @@
 # 04 — Architecture
 
 **Project:** Neural Network From Scratch  
-**Version:** 1.0  
-**Status:** Stage 9 COMPLETE
+**Version:** 1.1  
+**Status:** Stage 10 COMPLETE
 
 ## Overview
 
 This document describes the architecture of the neural-network framework. The architecture is designed for educational clarity, correctness, and modularity.
 
-**Current State:** Stage 9 End-to-End Experiments complete. XOR classification and nonlinear regression experiments validated. Sigmoid activation layer added. 465 tests passing.
+**Current State:** Stage 10 Visualization & Experiment Analysis complete. Visualization module with loss curves, regression fit, classification scatter, and comparison plots. 488 tests passing.
 
 ## Conceptual Architecture
 

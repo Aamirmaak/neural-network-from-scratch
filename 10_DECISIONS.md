@@ -1287,6 +1287,93 @@ Stage 9 experiments require sigmoid activation for binary classification (XOR wi
 
 ---
 
+## Stage 10 Decisions
+
+### D49: Visualization as Separate Analysis Layer
+
+**Date:** Stage 10  
+**Status:** ACCEPTED
+
+#### Decision
+
+Implement visualization as a separate analysis module (`visualization.py`), not integrated into core framework components (Value, Layer, Trainer).
+
+#### Context
+
+Stage 10 adds training visualization. The alternative is integrating plotting into the Trainer or Model classes.
+
+#### Reasoning
+
+- Core framework remains clean and dependency-free
+- Visualization is optional — users who don't need matplotlib aren't affected
+- Plotting functions are pure utilities that don't modify model state
+- Separation allows future visualization approaches without changing core
+
+#### Consequences
+
+- `visualization.py` is a standalone module
+- Core `training.py`, `layers.py`, etc. are unchanged
+- matplotlib is imported only when visualization functions are called
+
+---
+
+### D50: matplotlib as Only Visualization Dependency
+
+**Date:** Stage 10  
+**Status:** ACCEPTED
+
+#### Decision
+
+Use matplotlib as the sole visualization dependency. No Plotly, TensorBoard, W&B, or MLflow.
+
+#### Context
+
+The project needs plotting for training analysis. Multiple visualization libraries exist.
+
+#### Reasoning
+
+- matplotlib is the standard Python plotting library
+- Lightweight, well-documented, widely available
+- No external services or APIs required
+- Suitable for headless environments (Agg backend)
+- MIT-compatible license
+
+#### Consequences
+
+- Single optional dependency for visualization
+- `requirements.txt` lists matplotlib as optional
+- Core framework has zero visualization dependencies
+
+---
+
+### D51: Generated Plots Committed for Portfolio Value
+
+**Date:** Stage 10  
+**Status:** ACCEPTED
+
+#### Decision
+
+Generated PNG plots in `artifacts/plots/` are committed to the repository for portfolio and reproducibility value.
+
+#### Context
+
+Generated artifacts can bloat repositories. The alternative is to .gitignore them and regenerate.
+
+#### Reasoning
+
+- Static plots are small (30-65 KB each) and useful for GitHub visitors
+- Portfolio presentation benefits from immediately visible results
+- Plots can be regenerated via `python experiments/generate_plots.py`
+- No machine-specific information in the plots (deterministic matplotlib)
+
+#### Consequences
+
+- 5 PNG files committed in `artifacts/plots/`
+- Total ~230 KB — negligible repository size impact
+- README explains how to regenerate
+
+---
+
 ## Decision Summary
 
 | ID | Decision | Status |
@@ -1339,6 +1426,9 @@ Stage 9 experiments require sigmoid activation for binary classification (XOR wi
 | D46 | Deterministic shuffling via explicit seed | ACCEPTED |
 | D47 | Dataset/DataLoader in separate modules | ACCEPTED |
 | D48 | Sigmoid as Module wrapper (consistent with D30) | ACCEPTED |
+| D49 | Visualization as separate analysis layer | ACCEPTED |
+| D50 | matplotlib as only visualization dependency | ACCEPTED |
+| D51 | Generated plots committed for portfolio value | ACCEPTED |
 
 ---
 

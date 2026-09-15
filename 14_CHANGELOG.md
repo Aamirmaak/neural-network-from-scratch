@@ -1,8 +1,8 @@
 # 14 — Changelog
 
 **Project:** Neural Network From Scratch  
-**Version:** 1.0  
-**Status:** Stage 9 COMPLETE
+**Version:** 1.1  
+**Status:** Stage 10 COMPLETE
 
 ## Overview
 
@@ -46,7 +46,7 @@ This document records changes to the project.
 
 ### Changed
 
-- Version bumped from 0.9.0 to 1.0.0
+- Version bumped from 1.0.0 to 1.1.0
 
 ### Deprecated
 
@@ -80,6 +80,7 @@ This document records changes to the project.
 
 | Version | Date | Stage | Description |
 |---------|------|-------|-------------|
+| 1.1.0 | 2026-09-16 | 10 | Visualization module, plot generation, 23 tests, D49-D51, 5 generated plots |
 | 1.0.0 | 2026-09-16 | 9 | End-to-end experiments (XOR, regression), Sigmoid layer, 465 tests, D48 |
 | 0.9.0 | 2026-09-16 | 8 | Dataset, DataLoader, batching/shuffling/seed, Trainer integration, 63 tests, D43-D47 |
 | 0.8.0 | 2026-09-16 | 7 | Trainer class with fit/evaluate, per-sample lifecycle, history, 40 tests, D38-D42 |
