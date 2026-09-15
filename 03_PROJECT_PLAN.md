@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 5 IN PROGRESS
+**Status:** Stage 6 IN PROGRESS
 
 ## Overview
 
@@ -18,7 +18,7 @@ Stage 1  — Core Value / Computational Graph       ✓ COMPLETE
 Stage 2  — Extended Autodiff Operations          ✓ COMPLETE
 Stage 3  — Gradient Checking                    ✓ COMPLETE
 Stage 4  — Parameters and Layers            ✓ COMPLETE
-Stage 5  — Loss Functions
+Stage 5  — Loss Functions                    ✓ COMPLETE
 Stage 6  — Optimizers
 Stage 7  — Training Infrastructure
 Stage 8  — XOR Experiment

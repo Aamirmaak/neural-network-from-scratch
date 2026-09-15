@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 5 IN PROGRESS
+**Status:** Stage 6 IN PROGRESS
 
 ## Overview
 
@@ -459,6 +459,67 @@ Reusing existing differentiable operations (like relu) to build new differentiab
 
 ---
 
+### Optimizer State Management via Object Identity
+
+**Date:** 2026-09-15  
+**Stage:** 6  
+**Related Code:** `src/neuralearn/optimizers.py`
+
+#### Initial Understanding
+
+I initially considered using parameter values as dictionary keys for optimizer state.
+
+#### What Was Implemented
+
+State keyed by `id(parameter)`, which is the object's memory address.
+
+#### What Was Learned
+
+Using `id()` for state management is robust because:
+1. `id()` is stable for the lifetime of an object
+2. Avoids hash/equality issues with Value objects (which don't implement `__hash__`)
+3. Two Parameters with the same numeric value but different identity correctly get separate state
+4. State is naturally lost when a Parameter is garbage collected (acceptable behavior)
+
+The key insight: optimizer state is inherently tied to object identity, not object value. A Parameter's value changes every step, but its identity remains constant.
+
+#### Engineering Insight
+
+When designing stateful systems that associate state with objects, prefer object identity (`id()`) over object equality. This avoids subtle bugs where equal-valued but distinct objects share state incorrectly.
+
+---
+
+### Adam Bias Correction Mathematics
+
+**Date:** 2026-09-15  
+**Stage:** 6  
+**Related Code:** `src/neuralearn/optimizers.py` (Adam.step)
+
+#### Initial Understanding
+
+I knew Adam uses bias-corrected moments but had to verify the exact equations.
+
+#### What Was Implemented
+
+Standard Adam with:
+- `m_t = beta1 * m_{t-1} + (1-beta1) * g_t`
+- `v_t = beta2 * v_{t-1} + (1-beta2) * g_t^2`
+- `m_hat = m_t / (1 - beta1^t)`
+- `v_hat = v_t / (1 - beta2^t)`
+
+#### What Was Learned
+
+Bias correction is critical in early steps:
+- At t=1 with beta1=0.9: m_hat = m / 0.1 = 10*m (amplifies the first gradient by 10x)
+- At t=1 with beta2=0.999: v_hat = v / 0.001 = 1000*v (amplifies the first squared gradient by 1000x)
+- This compensates for the initialization of m=0, v=0 which would otherwise produce very small updates
+
+#### Mathematical Insight
+
+The bias correction terms `(1 - beta^t)` approach 1 as t grows, so the correction vanishes for large t. This means Adam behaves like a well-calibrated adaptive learning rate method after the initial warm-up phase.
+
+---
+
 ## Learning Categories
 
 ### Mathematical Concepts
@@ -620,11 +681,11 @@ The simplicity means: when someone reads `class Linear(Module)`, they immediatel
 
 | Category | Entries | Last Updated |
 |----------|---------|--------------|
-| Mathematical | 5 | 2026-09-15 |
-| Implementation | 4 | 2026-09-15 |
-| ML | 1 | 2026-09-15 |
-| Engineering | 5 | 2026-09-15 |
-| **Total** | **15** | 2026-09-15 |
+| Mathematical | 6 | 2026-09-15 |
+| Implementation | 5 | 2026-09-15 |
+| ML | 2 | 2026-09-15 |
+| Engineering | 6 | 2026-09-15 |
+| **Total** | **19** | 2026-09-15 |
 
 ---
 

@@ -2,13 +2,13 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 5 IN PROGRESS
+**Status:** Stage 6 IN PROGRESS
 
 ## Overview
 
 This document describes the architecture of the neural-network framework. The architecture is designed for educational clarity, correctness, and modularity.
 
-**Current State:** Stage 5 loss functions implemented and validated. MSE and BCE loss functions with gradient checking. 310 tests passing. Optimizers and training planned but not yet implemented.
+**Current State:** Stage 6 optimizers implemented and validated. SGD, MomentumSGD, Adam with gradient checking and integration tests. 354 tests passing. Training engine planned but not yet implemented.
 
 ## Conceptual Architecture
 

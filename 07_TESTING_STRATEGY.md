@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 5 IN PROGRESS
+**Status:** Stage 6 IN PROGRESS
 
 ## Overview
 

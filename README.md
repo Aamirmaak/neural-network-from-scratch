@@ -1,6 +1,6 @@
 # Project 001 — Neural Network From Scratch
 
-**Status:** Stage 5 In Progress
+**Status:** Stage 6 In Progress
 
 ## Overview
 
@@ -8,7 +8,7 @@ An educational deep-learning framework built from first principles to demonstrat
 
 This project implements a small but complete neural-network training system without using any existing deep-learning frameworks or automatic-differentiation libraries. The goal is to build strong AI/ML engineering fundamentals through real implementation work.
 
-**Current State:** Stage 5 loss functions implemented. MSE and BCE with gradient checking. 310 tests passing. Proceeding to architect review.
+**Current State:** Stage 6 optimizers implemented. SGD, MomentumSGD, Adam. 354 tests passing. Proceeding to architect review.
 
 ## Problem / Motivation
 
@@ -52,6 +52,7 @@ The completed project will be a small deep-learning framework supporting:
 | Parameters | IMPLEMENTED | Trainable model parameters |
 | Layers | IMPLEMENTED | Linear, ReLU, Tanh layers |
 | Losses | IMPLEMENTED | MSE, Binary Cross-Entropy |
+| Optimizers | IMPLEMENTED | SGD, Momentum, Adam |
 | Optimizers | PLANNED | SGD, Momentum, Adam |
 | Training Loop | PLANNED | Forward, backward, update cycle |
 | Experiments | PLANNED | XOR, regression, controlled comparisons |
@@ -143,7 +144,8 @@ neural-network-from-scratch/
 │       ├── gradient_check.py
 │       ├── parameter.py
 │       ├── layers.py
-│       └── losses.py
+│       ├── losses.py
+│       └── optimizers.py
 ├── tests/
 ├── experiments/
 ├── configs/
@@ -167,14 +169,14 @@ neural-network-from-scratch/
 
 ## Current Milestone
 
-**Stage 5 — Loss Functions**
+**Stage 6 — Optimizers**
 
-Stage 5 implements differentiable loss functions:
-- `mse_loss` — Mean Squared Error with mean reduction
-- `binary_cross_entropy` — Binary Cross-Entropy with probability clipping
-- Gradient checking for all losses
-- Composition with Linear layers (Linear → MSE → backward)
-- 310 passing tests (252 existing + 58 new)
+Stage 6 implements parameter-update optimizers:
+- `SGD` — Vanilla stochastic gradient descent
+- `MomentumSGD` — SGD with momentum
+- `Adam` — Adaptive moment estimation
+- Deterministic learning verification
+- 354 passing tests (310 existing + 44 new)
 
 ## Future Roadmap
 

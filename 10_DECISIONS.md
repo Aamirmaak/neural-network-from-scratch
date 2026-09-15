@@ -2,7 +2,7 @@
 
 **Project:** Neural Network From Scratch  
 **Version:** 1.0  
-**Status:** Stage 5 IN PROGRESS
+**Status:** Stage 6 IN PROGRESS
 
 ## Overview
 
@@ -853,6 +853,119 @@ Loss functions must reduce multiple per-sample losses to a single scalar. The ch
 
 ---
 
+## Stage 6 Decisions
+
+### D34: Optimizers as Classes
+
+**Date:** Stage 6  
+**Status:** ACCEPTED
+
+### Decision
+
+Optimizers are implemented as classes (SGD, MomentumSGD, Adam), not as functions.
+
+### Context
+
+SGD could be a stateless function, but Momentum and Adam maintain per-parameter state (velocity, moments, timestep). A class-based API is consistent across all three.
+
+### Reasoning
+
+- Momentum and Adam require per-parameter state that persists across step() calls
+- Class-based API is consistent: all optimizers have step() and zero_grad()
+- State is naturally stored as instance attributes
+- Matches PyTorch/TensorFlow convention ( familiar API)
+
+### Consequences
+
+- Consistent API: optimizer.step(), optimizer.zero_grad()
+- State naturally persists across calls
+- Easy to inspect optimizer state for debugging
+
+---
+
+### D35: Optimizers Accept List[Parameter]
+
+**Date:** Stage 6  
+**Status:** ACCEPTED
+
+### Decision
+
+Optimizers accept `List[Parameter]` directly, not Module objects.
+
+### Context
+
+Optimizers need to update Parameters. Coupling to Module would create unnecessary dependency.
+
+### Reasoning
+
+- Decouples optimizer from model architecture
+- Users extract parameters via model.parameters() and pass to optimizer
+- Consistent with PyTorch convention
+- Enables mixing parameters from multiple modules
+
+### Consequences
+
+- Optimizer is independent of model structure
+- User is responsible for passing correct parameters
+- Simple, composable design
+
+---
+
+### D36: Parameter State Keyed by id()
+
+**Date:** Stage 6  
+**Status:** ACCEPTED
+
+### Decision
+
+Per-parameter optimizer state is keyed by `id(parameter)`, not by the parameter object itself.
+
+### Context
+
+Python dict keys must be hashable. Value/Parameter may not implement __hash__ consistently, and using object identity is more robust.
+
+### Reasoning
+
+- id() is stable for the lifetime of an object
+- Avoids hash/equality issues with Value objects
+- State is correctly associated with specific Parameter instances
+- Two Parameters with same data but different identity get separate state
+
+### Consequences
+
+- State is correctly isolated per Parameter
+- No accidental state sharing between unrelated Parameters
+- State is lost if Parameter is garbage collected (acceptable)
+
+---
+
+### D37: optimizer.zero_grad() Delegates to Parameter.zero_grad()
+
+**Date:** Stage 6  
+**Status:** ACCEPTED
+
+### Decision
+
+optimizer.zero_grad() calls p.zero_grad() for each parameter, reusing existing infrastructure.
+
+### Context
+
+Parameter.zero_grad() already exists and correctly resets gradients. Duplicating this logic would be wasteful.
+
+### Reasoning
+
+- Single source of truth for gradient reset
+- No duplication of logic
+- Consistent behavior whether calling parameter.zero_grad() or optimizer.zero_grad()
+- Module.zero_grad() also delegates the same way
+
+### Consequences
+
+- gradient reset is consistent everywhere
+- No need to maintain separate gradient-clearing logic
+
+---
+
 ## Decision Summary
 
 | ID | Decision | Status |
@@ -890,6 +1003,10 @@ Loss functions must reduce multiple per-sample losses to a single scalar. The ch
 | D31 | Loss functions as plain functions | ACCEPTED |
 | D32 | BCE clips via relu() | ACCEPTED |
 | D33 | Mean reduction for both losses | ACCEPTED |
+| D34 | Optimizers as classes | ACCEPTED |
+| D35 | Optimizers accept List[Parameter] | ACCEPTED |
+| D36 | State keyed by id() | ACCEPTED |
+| D37 | zero_grad delegates to Parameter | ACCEPTED |
 
 ---
 
