@@ -1,6 +1,6 @@
 # Project 001 — Neural Network From Scratch
 
-**Status:** Stage 10 Complete
+**Status:** Stage 11 Complete
 
 ## Overview
 
@@ -8,7 +8,7 @@ An educational deep-learning framework built from first principles to demonstrat
 
 This project implements a small but complete neural-network training system without using any existing deep-learning frameworks or automatic-differentiation libraries. The goal is to build strong AI/ML engineering fundamentals through real implementation work.
 
-**Current State:** Stage 10 Visualization & Experiment Analysis complete. Visualization module for training curves, regression fit, classification scatter. 5 plots generated from real experiments. 488 tests passing.
+**Current State:** Stage 11 Framework/API Polish complete. 488 tests passing. Clean public API with type hints, docstrings, and `pyproject.toml` for proper installation.
 
 ## Problem / Motivation
 
@@ -30,13 +30,72 @@ Building from scratch forces confrontation with every detail of the training mac
 4. Design reproducible experiments that demonstrate training behavior
 5. Develop engineering practices for correctness, modularity, and testability
 
+## Installation
+
+```bash
+# Core framework (no dependencies)
+pip install -e .
+
+# With visualization support
+pip install -e ".[viz]"
+
+# Development (pytest + matplotlib)
+pip install -e ".[dev]"
+```
+
+## Quick Start
+
+```python
+from neuralearn import (
+    Value, Linear, Tanh, Sigmoid,
+    mse_loss, binary_cross_entropy,
+    Adam, Trainer, Dataset, DataLoader,
+)
+
+# Define a model
+class MLP:
+    def __init__(self):
+        self.layer1 = Linear(2, 8)
+        self.act1 = Tanh()
+        self.layer2 = Linear(8, 1)
+        self.act2 = Sigmoid()
+
+    def forward(self, x):
+        h = [self.act1(v) for v in self.layer1(x)]
+        out = self.layer2(h)
+        return [self.act2(v) for v in out]
+
+    def __call__(self, x):
+        return self.forward(x)
+
+    def parameters(self):
+        return self.layer1.parameters() + self.layer2.parameters()
+
+    def zero_grad(self):
+        self.layer1.zero_grad()
+        self.layer2.zero_grad()
+
+# Create dataset
+inputs = [[Value(0.0), Value(0.0)], [Value(0.0), Value(1.0)],
+          [Value(1.0), Value(0.0)], [Value(1.0), Value(1.0)]]
+targets = [[Value(0.0)], [Value(1.0)], [Value(1.0)], [Value(0.0)]]
+
+# Train
+model = MLP()
+optimizer = Adam(model.parameters(), lr=0.01)
+trainer = Trainer(model, binary_cross_entropy, optimizer)
+history = trainer.fit(inputs, targets, epochs=500)
+
+print(f"Final loss: {history['loss'][-1]:.4f}")
+```
+
 ## Intended Final System
 
 The completed project will be a small deep-learning framework supporting:
 
 - Tensor/Value abstraction with gradient tracking
 - Reverse-mode automatic differentiation
-- Neural-network layers (Linear, ReLU, Tanh)
+- Neural-network layers (Linear, ReLU, Tanh, Sigmoid)
 - Loss functions (MSE, Binary Cross-Entropy)
 - Optimizers (SGD, Momentum, Adam)
 - Training infrastructure with logging and visualization
@@ -170,6 +229,8 @@ The project will eventually support:
 ```
 neural-network-from-scratch/
 ├── README.md
+├── pyproject.toml
+├── requirements.txt
 ├── 01_PRD.md
 ├── 02_TRD.md
 ├── 03_PROJECT_PLAN.md
@@ -195,17 +256,21 @@ neural-network-from-scratch/
 │       ├── optimizers.py
 │       ├── training.py
 │       ├── datasets.py
-│       └── dataloaders.py
+│       ├── dataloaders.py
+│       └── visualization.py
 ├── tests/
 ├── experiments/
+├── artifacts/
+│   └── plots/
 ├── configs/
 └── scripts/
 ```
 
 ## Technology Constraints
 
-- **Language:** Python
-- **Numerical:** NumPy allowed
+- **Language:** Python (>=3.10)
+- **Core dependencies:** None (pure Python)
+- **Optional:** matplotlib (for visualization)
 - **Forbidden:** PyTorch, TensorFlow, JAX, Keras, automatic-differentiation libraries
 - **Purpose:** Implement learning machinery ourselves
 
@@ -217,15 +282,50 @@ neural-network-from-scratch/
 - Modular design with clear interfaces
 - Comprehensive testing
 
+## Public API
+
+```python
+# Core
+from neuralearn import Value, Parameter
+
+# Layers
+from neuralearn import Module, Neuron, Linear, ReLU, Tanh, Sigmoid
+
+# Losses
+from neuralearn import mse_loss, binary_cross_entropy
+
+# Optimizers
+from neuralearn import SGD, MomentumSGD, Adam
+
+# Training
+from neuralearn import Trainer
+
+# Data
+from neuralearn import Dataset, DataLoader
+
+# Validation
+from neuralearn import numerical_grad, gradient_check
+
+# Visualization (requires matplotlib)
+from neuralearn import (
+    plot_loss, plot_train_test_curve, plot_regression_fit,
+    plot_xor_predictions, plot_comparison, plot_accuracy,
+)
+```
+
 ## Current Milestone
 
-**Stage 10 — Visualization & Experiment Analysis**
+**Stage 11 — Framework/API Polish**
 
-Stage 10 adds a lightweight visualization layer:
-- `src/neuralearn/visualization.py` — plot_loss, plot_train_test_curve, plot_regression_fit, plot_xor_predictions, plot_comparison, plot_accuracy
-- 5 plots generated from real experiments in `artifacts/plots/`
-- matplotlib is an optional dependency (not required for core framework)
-- 23 visualization tests
+Stage 11 polishes the framework for external developers:
+- `pyproject.toml` for proper package installation
+- `gradient_check` exported from package root
+- Visualization functions lazy-loaded (no matplotlib dependency at import time)
+- Type hints added to visualization utilities
+- Dead code removed from visualization module
+- `Module.forward()` return type fixed (was incorrectly typed as `Value`)
+- `Value.__rpow__` added (`2 ** Value(3)` now works)
+- Unused imports cleaned up
 - 488 passing tests total
 
 ## Future Roadmap

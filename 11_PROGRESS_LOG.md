@@ -1,8 +1,8 @@
 # 11 — Progress Log
 
 **Project:** Neural Network From Scratch  
-**Version:** 1.1  
-**Status:** Stage 10 COMPLETE
+**Version:** 1.2  
+**Status:** Stage 11 COMPLETE
 
 ## Overview
 
@@ -311,6 +311,47 @@ This document tracks progress through the project stages.
 
 ---
 
+## Entry 006
+
+**Date:** 2026-09-16  
+**Stage:** Stage 11 — Framework/API Polish
+
+### Work Completed
+
+- Created `pyproject.toml` for proper package installation
+  - Optional `[viz]` and `[dev]` extras
+  - pytest configured with `pythonpath = ["src"]`
+- Exported `gradient_check` and `numerical_grad` from `__init__.py`
+- Added `Value.__rpow__` (supports `2 ** Value(3)`)
+- Fixed `Module.forward()` return type (was `Value`, now untyped for flexibility)
+- Lazy-loaded visualization functions from `__init__.py` (no matplotlib at import time)
+- Removed dead code from `visualization.py`:
+  - Unused `plot_train_test_loss` alias
+  - Unused numpy meshgrid in `plot_xor_predictions`
+- Added missing type hints to visualization utilities
+- Cleaned up unused `List` import in `datasets.py`
+- Created `tests/test_api.py` — 7 API smoke tests
+  - Clean imports, version check, `__all__` verification
+  - Full training workflows (binary classification, regression with DataLoader)
+  - Gradient check integration
+- Updated README: proper quickstart, `pyproject.toml` in structure
+- Updated `14_CHANGELOG.md` with Stage 11 changes
+- Updated `03_PROJECT_PLAN.md` with Stage 11 completion
+- 495 tests passing (488 existing + 7 new)
+
+### Decisions
+
+- Visualization functions are lazy-loaded to avoid matplotlib as hard dependency
+- `Module.forward()` returns untyped (not `Value` or `List[Value]`) to support all layer types
+- `Value.__rpow__` delegates to existing `__pow__` on the base Value
+
+### Next Step
+
+- Stage 11 implementation complete
+- Next stage: Stage 12 — Packaging
+
+---
+
 ## Stage Progress
 
 | Stage | Status | Start Date | End Date |
@@ -326,7 +367,7 @@ This document tracks progress through the project stages.
 | Stage 8 | COMPLETE (approved) | 2026-09-16 | 2026-09-16 |
 | Stage 9 | COMPLETE (approved) | 2026-09-16 | 2026-09-16 |
 | Stage 10 | COMPLETE (approved) | 2026-09-16 | 2026-09-16 |
-| Stage 11 | NOT STARTED | - | - |
+| Stage 11 | COMPLETE | 2026-09-16 | 2026-09-16 |
 | Stage 12 | NOT STARTED | - | - |
 | Stage 13 | NOT STARTED | - | - |
 | Stage 14 | NOT STARTED | - | - |
@@ -337,10 +378,10 @@ This document tracks progress through the project stages.
 
 | Metric | Value |
 |--------|-------|
-| Current Stage | 10 |
+| Current Stage | 11 |
 | Documentation Files | 15 |
 | Source Files | 12 |
-| Test Files | 10 |
+| Test Files | 11 |
 | Experiment Files | 3 |
-| Total Tests | 488 |
-| Tests Passed | 488 |
+| Total Tests | 495 |
+| Tests Passed | 495 |

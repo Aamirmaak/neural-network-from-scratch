@@ -43,7 +43,7 @@ class Module:
         """Delegate to forward(). Makes module instances callable."""
         return self.forward(*args)
 
-    def forward(self, *args) -> Value:
+    def forward(self, *args):
         """Compute the forward pass. Subclasses must override."""
         raise NotImplementedError
 

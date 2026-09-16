@@ -25,11 +25,18 @@ Design decisions:
 from __future__ import annotations
 
 import os
-from typing import Dict, List, Optional, Sequence
+from typing import Any, Callable, Dict, List, Optional, Sequence
 
 
 def _ensure_matplotlib():
-    """Import and configure matplotlib, raising a clear error if missing."""
+    """Import and configure matplotlib, raising a clear error if missing.
+
+    Returns:
+        Tuple of (matplotlib module, pyplot module).
+
+    Raises:
+        ImportError: If matplotlib is not installed.
+    """
     try:
         import matplotlib
         matplotlib.use("Agg")
@@ -39,11 +46,19 @@ def _ensure_matplotlib():
         raise ImportError(
             "matplotlib is required for visualization. "
             "Install it with: pip install matplotlib"
-        )
+        ) from None
 
 
 def _resolve_save_path(save_path: Optional[str], default_name: str) -> str:
-    """Resolve save path, creating directories if needed."""
+    """Resolve save path, creating directories if needed.
+
+    Args:
+        save_path: Explicit file path, or None for default location.
+        default_name: Filename to use when save_path is None.
+
+    Returns:
+        Resolved absolute file path.
+    """
     if save_path is None:
         save_dir = os.path.join("artifacts", "plots")
         os.makedirs(save_dir, exist_ok=True)
@@ -102,9 +117,6 @@ def plot_loss(
     return save_path
 
 
-plot_train_test_loss = plot_loss  # alias for consistency
-
-
 def plot_train_test_curve(
     history: Dict[str, List[float]],
     train_key: str = "train_mse",
@@ -155,7 +167,7 @@ def plot_regression_fit(
     x_test: Sequence[float],
     y_test: Sequence[float],
     predictions: Sequence[float],
-    target_fn=None,
+    target_fn: Optional[Callable[[float], float]] = None,
     title: str = "Regression Fit",
     save_path: Optional[str] = None,
 ) -> str:
@@ -242,9 +254,6 @@ def plot_xor_predictions(
                     textcoords="offset points", xytext=(8, 8),
                     fontsize=9, color="black")
 
-    # Draw decision regions (background shading)
-    import numpy as np
-    xx, yy = np.meshgrid(np.linspace(-0.5, 1.5, 100), np.linspace(-0.5, 1.5, 100))
     ax.set_xlim(-0.5, 1.5)
     ax.set_ylim(-0.5, 1.5)
 

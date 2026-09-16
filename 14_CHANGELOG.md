@@ -1,8 +1,8 @@
 # 14 — Changelog
 
 **Project:** Neural Network From Scratch  
-**Version:** 1.1  
-**Status:** Stage 10 COMPLETE
+**Version:** 1.2  
+**Status:** Stage 11 COMPLETE
 
 ## Overview
 
@@ -12,22 +12,28 @@ This document records changes to the project.
 
 ---
 
-## [Unreleased]
+## [1.2.0] — Stage 11 — Framework/API Polish
 
 ### Added
 
-- Stage 9: End-to-End Experiments:
-  - `experiments/experiment_a_xor.py` — XOR classification experiment (linear vs MLP)
-  - `experiments/experiment_b_regression.py` — Nonlinear regression experiment (linear vs MLP)
-  - `src/neuralearn/layers.py` — Sigmoid activation layer (Module wrapper)
-  - `src/neuralearn/value.py` — Value.sigmoid() method
-  - `tests/test_layers.py` — 8 new Sigmoid tests (forward, gradient, numerical check)
-- Stage 8: Dataset & DataLoader:
-  - `src/neuralearn/datasets.py` — Dataset class for paired input/target storage
-  - `src/neuralearn/dataloaders.py` — DataLoader class with batching, shuffling, seed, drop_last
-  - `tests/test_dataset.py` — 25 dataset tests
-  - `tests/test_dataloader.py` — 32 dataloader tests
-  - Trainer.fit() now accepts DataLoader (backward-compatible with direct lists)
+- `pyproject.toml` — proper package installation with optional `[viz]` and `[dev]` extras
+- `gradient_check` and `numerical_grad` exported from package root
+- `Value.__rpow__` — support `2 ** Value(3)` syntax
+- `tests/test_api.py` — 7 API smoke tests (clean imports, full training workflows)
+- README quickstart example
+
+### Fixed
+
+- `Module.forward()` return type annotation (was `Value`, now untyped for flexibility)
+- Visualization functions now lazy-loaded from `__init__.py` (no matplotlib import at package level)
+- `visualization.py` removed dead code (unused `plot_train_test_loss` alias, unused numpy meshgrid)
+- `visualization.py` added missing type hints (`Callable` for `target_fn`, `Any` for `history`)
+- `datasets.py` removed unused `List` import
+- README updated: proper quickstart, `pyproject.toml` in structure, correct API examples
+
+---
+
+## [1.1.0] — Stage 10 — Visualization & Experiment Analysis
 - Stage 7: Training engine:
   - `src/neuralearn/training.py` — Trainer class with fit/evaluate API
   - `tests/test_training.py` — 40 training engine tests

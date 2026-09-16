@@ -24,8 +24,7 @@ Stage 7  — Training Engine                  ✓ COMPLETE
 Stage 8  — Dataset & DataLoader             ✓ COMPLETE
 Stage 9  — End-to-End Experiments           ✓ COMPLETE
 Stage 10 — Visualization & Experiment Analysis  ✓ COMPLETE
-Stage 11 — Controlled Experiments
-Stage 11 — Visualization and Evaluation
+Stage 11 — Framework/API Polish             ✓ COMPLETE
 Stage 12 — Packaging
 Stage 13 — Reproducibility / Demonstration
 Stage 14 — Final Documentation and Portfolio Polish
@@ -555,40 +554,27 @@ Systematically investigate factors affecting training.
 
 ---
 
-## Stage 11 — Visualization and Evaluation
+## Stage 11 — Framework/API Polish
 
-**Status:** PLANNED  
+**Status:** COMPLETE  
 **Dependencies:** Stages 8, 9, 10
 
 ### Objective
 
-Create comprehensive visualizations of training and results.
+Polish the framework for external developers: proper packaging, clean exports, type hints, dead code removal.
 
 ### Major Work
 
-- Implement training loss visualization
-- Implement prediction visualization
-- Implement decision boundary visualization
-- Implement experiment comparison plots
-
-### Expected Learning
-
-- How visualization aids understanding
-- What metrics are most informative
-- How to present results clearly
-
-### Acceptance Criteria
-
-- [ ] Training curves are plotted
-- [ ] Regression predictions are visualized
-- [ ] Decision boundaries are visualized
-- [ ] Experiment comparisons are visualized
-
-### Expected Artifacts
-
-- `src/neuralearn/visualization.py`
-- Visualization scripts
-- Result images
+- Created `pyproject.toml` for proper package installation
+- Exported `gradient_check` and `numerical_grad` from package root
+- Added `Value.__rpow__` (supports `2 ** Value(3)`)
+- Fixed `Module.forward()` return type annotation
+- Lazy-loaded visualization functions from `__init__.py`
+- Removed dead code from visualization module (unused alias, unused numpy meshgrid)
+- Added missing type hints to visualization utilities
+- Cleaned up unused imports
+- Added 7 API smoke tests
+- Updated README with working quickstart example
 
 ---
 

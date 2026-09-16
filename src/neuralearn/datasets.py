@@ -12,7 +12,7 @@ Design Decisions:
 
 from __future__ import annotations
 
-from typing import Any, List, Sequence, Tuple
+from typing import Any, Sequence, Tuple
 
 
 class Dataset:

@@ -196,6 +196,14 @@ class Value:
         out._backward = _backward
         return out
 
+    def __rpow__(self, other: float) -> Value:
+        """Support scalar ** Value (reflected power).
+
+        Computes z = other^self where other is a scalar.
+        """
+        other_val = other if isinstance(other, Value) else Value(other)
+        return other_val.__pow__(self.data)
+
     def __truediv__(self, other: Value | float) -> Value:
         """z = x / y
 
