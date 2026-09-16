@@ -1,8 +1,8 @@
 # 10 — Architectural Decision Log
 
 **Project:** Neural Network From Scratch  
-**Version:** 1.3  
-**Status:** Stage 12 COMPLETE
+**Version:** 1.4  
+**Status:** Stage 13 COMPLETE
 
 ## Overview
 
@@ -1636,5 +1636,52 @@ The `neuralearn example` command trains a tiny MLP on XOR directly in the CLI pr
 
 - Users see immediate proof the framework works after install
 - No separate example scripts needed for basic demo
+
+---
+
+## D38: Demo Command as Primary Showcase
+
+**Date:** Stage 13  
+**Status:** ACCEPTED
+
+### Decision
+
+`neuralearn demo` is the primary demonstration command with full output. `example` remains as a brief alternative.
+
+### Reasoning
+
+- Different users have different needs: quick proof vs. detailed showcase
+- `demo` provides educational value through visible training progression
+- `example` is useful for quick scripting/automation
+- Both use the same underlying model and data
+
+### Consequences
+
+- Two entry points serve different audiences
+- No duplication of core logic (shared helpers)
+
+---
+
+## D39: No Docker or Web UI
+
+**Date:** Stage 13  
+**Status:** ACCEPTED
+
+### Decision
+
+No Docker containerization or web interface is added in Stage 13.
+
+### Reasoning
+
+- This is an educational framework, not a production service
+- Local CLI demo is sufficient for the target audience
+- Docker/web would add unnecessary complexity and dependencies
+- The framework's value is in the code, not the deployment infrastructure
+
+### Consequences
+
+- Installation remains simple: `pip install .`
+- Demo works anywhere Python runs
+- No container maintenance burden
 
 ---

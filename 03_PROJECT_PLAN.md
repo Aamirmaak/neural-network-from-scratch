@@ -26,7 +26,7 @@ Stage 9  — End-to-End Experiments           ✓ COMPLETE
 Stage 10 — Visualization & Experiment Analysis  ✓ COMPLETE
 Stage 11 — Framework/API Polish             ✓ COMPLETE
 Stage 12 — Packaging + CLI                  ✓ COMPLETE
-Stage 13 — Reproducibility / Demonstration
+Stage 13 — Deployment / Demo                ✓ COMPLETE
 Stage 14 — Final Documentation and Portfolio Polish
 ```
 
@@ -600,40 +600,29 @@ Turn the project into a proper installable Python package and add a lightweight 
 
 ---
 
-## Stage 13 — Reproducibility / Demonstration
+## Stage 13 — Deployment / Demo
 
-**Status:** PLANNED  
+**Status:** COMPLETE  
 **Dependencies:** Stage 12
 
 ### Objective
 
-Ensure full reproducibility and create demonstration materials.
+Create a polished end-to-end demonstration that showcases the complete framework.
 
 ### Major Work
 
-- Verify reproducible results
-- Create demonstration scripts
-- Document reproduction steps
-- Test reproduction from clean environment
+- Added `neuralearn demo` command with full training output
+- Per-sample prediction table with correctness verification
+- Configurable hyperparameters (`--epochs`, `--lr`, `--hidden`)
+- Optional matplotlib plotting (`--plot`)
+- Deterministic output (reproducible results)
+- 14 new demo tests
+- Verified from clean install outside source tree
 
-### Expected Learning
+### Artifacts
 
-- How to ensure reproducibility
-- How to document reproduction
-- How to create effective demonstrations
-
-### Acceptance Criteria
-
-- [ ] Results are reproducible from documentation
-- [ ] Demonstration scripts work correctly
-- [ ] Reproduction steps are clear
-- [ ] Clean environment reproduction is verified
-
-### Expected Artifacts
-
-- Reproduction documentation
-- Demonstration scripts
-- Verified reproducible results
+- `src/neuralearn/cli.py` — `demo` command
+- `tests/test_demo.py` — 14 tests
 
 ---
 

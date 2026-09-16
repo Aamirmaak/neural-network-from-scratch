@@ -1,8 +1,8 @@
 # 11 — Progress Log
 
 **Project:** Neural Network From Scratch  
-**Version:** 1.3  
-**Status:** Stage 12 COMPLETE
+**Version:** 1.4  
+**Status:** Stage 13 COMPLETE
 
 ## Overview
 
@@ -383,6 +383,48 @@ This document tracks progress through the project stages.
 
 ---
 
+## Entry 008
+
+**Date:** 2026-09-16  
+**Stage:** Stage 13 — Deployment / Demo
+
+### Work Completed
+
+- Rewrote `src/neuralearn/cli.py` — added polished `demo` command
+  - Full model/dataset/optimizer summary header
+  - Initial MSE evaluation before training
+  - Training loss progression (epoch 1, mid, final)
+  - Per-sample prediction table (input, target, raw, class, correct)
+  - Final accuracy and result status (SUCCESS/PARTIAL/INCOMPLETE)
+  - Configurable `--epochs`, `--lr`, `--hidden` flags
+  - `--plot` flag for optional matplotlib visualization
+  - `--output` flag for custom plot directory
+- Created `tests/test_demo.py` — 14 demo tests
+  - Command output tests (model info, training, predictions, result)
+  - Determinism test (same output twice)
+  - Custom parameters test (hidden size, learning rate)
+  - Plot tests (with and without matplotlib)
+  - Helper function tests
+  - Subprocess test (installed package)
+- Verified clean install from `pip install .` in fresh virtual environment
+- Verified `neuralearn demo` works from installed package outside source tree
+- 521 tests passing (507 existing + 14 new)
+
+### Decisions
+
+- D38: `demo` command is the primary showcase; `example` remains as brief alternative
+- D39: Demo uses synthetic XOR data (no internet, no external datasets)
+- D40: Plotting is optional via `--plot` flag (matplotlib not required for basic demo)
+- D41: Demo output is deterministic (no random seeds needed for XOR)
+- D42: No Docker/web UI — local CLI demo is sufficient for educational framework
+
+### Next Step
+
+- Stage 13 implementation complete
+- Next stage: Stage 14 — Final Audit + Open-Source Release
+
+---
+
 ## Stage Progress
 
 | Stage | Status | Start Date | End Date |
@@ -400,7 +442,7 @@ This document tracks progress through the project stages.
 | Stage 10 | COMPLETE (approved) | 2026-09-16 | 2026-09-16 |
 | Stage 11 | COMPLETE | 2026-09-16 | 2026-09-16 |
 | Stage 12 | COMPLETE | 2026-09-16 | 2026-09-16 |
-| Stage 13 | NOT STARTED | - | - |
+| Stage 13 | COMPLETE | 2026-09-16 | 2026-09-16 |
 | Stage 14 | NOT STARTED | - | - |
 
 ---
@@ -409,10 +451,10 @@ This document tracks progress through the project stages.
 
 | Metric | Value |
 |--------|-------|
-| Current Stage | 12 |
+| Current Stage | 13 |
 | Documentation Files | 15 |
 | Source Files | 13 |
-| Test Files | 12 |
+| Test Files | 13 |
 | Experiment Files | 3 |
-| Total Tests | 507 |
-| Tests Passed | 507 |
+| Total Tests | 521 |
+| Tests Passed | 521 |

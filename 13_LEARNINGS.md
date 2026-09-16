@@ -1,8 +1,8 @@
 # 13 — Learning Log
 
 **Project:** Neural Network From Scratch  
-**Version:** 1.2  
-**Status:** Stage 11 COMPLETE
+**Version:** 1.4  
+**Status:** Stage 13 COMPLETE
 
 ## Overview
 

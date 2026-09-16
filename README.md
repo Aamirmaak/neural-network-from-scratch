@@ -1,6 +1,6 @@
 # Project 001 — Neural Network From Scratch
 
-**Status:** Stage 12 Complete
+**Status:** Stage 13 Complete
 
 ## Overview
 
@@ -8,7 +8,7 @@ An educational deep-learning framework built from first principles to demonstrat
 
 This project implements a small but complete neural-network training system without using any existing deep-learning frameworks or automatic-differentiation libraries. The goal is to build strong AI/ML engineering fundamentals through real implementation work.
 
-**Current State:** Stage 12 Package Distribution + CLI complete. 507 tests passing. Installable via pip, CLI with `--version`, `info`, and `example` commands.
+**Current State:** Stage 13 Deployment/Demo complete. 521 tests passing. Polished demo command with full training output, prediction table, and optional plotting.
 
 ## Problem / Motivation
 
@@ -94,15 +94,53 @@ history = trainer.fit(inputs, targets, epochs=500)
 print(f"Final loss: {history['loss'][-1]:.4f}")
 ```
 
-## CLI
+## Quick Demo
 
-After installation, the `neuralearn` command is available:
+After installation, run the end-to-end XOR classification demo:
 
 ```bash
-neuralearn --version    # print version
-neuralearn info         # project information
-neuralearn example      # run XOR training demo
-neuralearn --help       # usage help
+neuralearn demo
+```
+
+This trains a 2-layer MLP on the XOR problem and shows:
+- Model architecture and parameter count
+- Training loss progression
+- Per-sample predictions with correctness
+- Final accuracy and result
+
+**Options:**
+
+```bash
+neuralearn demo --epochs 500     # more training
+neuralearn demo --hidden 16      # larger model
+neuralearn demo --lr 0.01        # different learning rate
+neuralearn demo --plot           # generate plots (requires matplotlib)
+neuralearn demo --plot --output ./plots  # custom output directory
+```
+
+**Example output:**
+
+```
+==================================================
+  NeuraLearn Demo — XOR Classification
+==================================================
+
+  Dataset:    XOR (4 samples, 2 features)
+  Model:      MLP 2 -> 8 -> 1 (Tanh, Sigmoid)
+  Parameters: 33
+  Loss:       Binary Cross-Entropy
+  Optimizer:  Adam (lr=0.05)
+  Epochs:     300
+
+  Predictions:
+    Input              Target      Raw    Class  Correct
+    (0, 0)                0.0   0.0047      0.0      YES
+    (0, 1)                1.0   0.9964      1.0      YES
+    (1, 0)                1.0   0.9969      1.0      YES
+    (1, 1)                0.0   0.0036      0.0      YES
+
+  Accuracy:   4/4 (100%)
+  Result:     SUCCESS — XOR learned perfectly
 ```
 
 ## Intended Final System
@@ -337,17 +375,16 @@ subprocess.run(["neuralearn", "--version"])
 
 ## Current Milestone
 
-**Stage 12 — Package Distribution + CLI**
+**Stage 13 — Deployment / Demo**
 
-Stage 12 turns the project into a proper installable Python package:
-- `pyproject.toml` with correct `setuptools.build_meta` backend
-- `pip install .` works from clean environment
-- `pip install -e .` works for development
-- CLI entry point: `neuralearn --version`, `neuralearn info`, `neuralearn example`
-- 12 new CLI tests (parser + subprocess)
-- 507 total tests passing
-- Clean build artifacts (sdist + wheel)
-- No new ML capabilities added
+Stage 13 delivers a polished end-to-end demonstration:
+- `neuralearn demo` — comprehensive XOR training with full output
+- `--plot` flag for optional matplotlib visualization
+- `--epochs`, `--lr`, `--hidden` for configurable demo
+- Deterministic output (same result every run)
+- Works from installed package, outside source tree
+- 14 new demo tests
+- 521 total tests passing
 
 ## Future Roadmap
 

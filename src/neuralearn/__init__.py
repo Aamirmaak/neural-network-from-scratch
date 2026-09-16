@@ -16,7 +16,7 @@ Public API:
                 plot_xor_predictions, plot_comparison, plot_accuracy
 """
 
-__version__ = "1.3.0"
+__version__ = "1.4.0"
 
 from neuralearn.value import Value
 from neuralearn.parameter import Parameter

@@ -1,14 +1,35 @@
 # 14 — Changelog
 
 **Project:** Neural Network From Scratch  
-**Version:** 1.3  
-**Status:** Stage 12 COMPLETE
+**Version:** 1.4  
+**Status:** Stage 13 COMPLETE
 
 ## Overview
 
 This document records changes to the project.
 
 **Format:** Follows [Keep a Changelog](https://keepachangelog.com/) format.
+
+---
+
+## [1.4.0] — Stage 13 — Deployment / Demo
+
+### Added
+
+- `neuralearn demo` — polished end-to-end XOR classification demo
+  - Full model/dataset/optimizer summary
+  - Training loss progression (epoch 1, mid, final)
+  - Per-sample prediction table with raw values, classes, and correctness
+  - Final accuracy and result status
+  - `--epochs`, `--lr`, `--hidden` configuration flags
+  - `--plot` flag for optional matplotlib visualization (loss curve + prediction scatter)
+  - `--output` flag for custom plot output directory
+- `tests/test_demo.py` — 14 demo tests (command, helpers, subprocess)
+
+### Changed
+
+- Refactored CLI internal helpers (`_build_xor_demo_model`, `_make_xor_data`)
+- `example` command preserved as brief alternative to `demo`
 
 ---
 
