@@ -1,8 +1,8 @@
 # 11 — Progress Log
 
-**Project:** Neural Network From Scratch  
-**Version:** 1.4  
-**Status:** Stage 13 COMPLETE
+**Project:** NeuraLearn  
+**Version:** 1.4.0  
+**Status:** OPEN-SOURCE RELEASE
 
 ## Overview
 
