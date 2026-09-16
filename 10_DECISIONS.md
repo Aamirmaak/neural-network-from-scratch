@@ -1,8 +1,8 @@
 # 10 — Architectural Decision Log
 
 **Project:** Neural Network From Scratch  
-**Version:** 1.0  
-**Status:** Stage 8 IN PROGRESS
+**Version:** 1.3  
+**Status:** Stage 12 COMPLETE
 
 ## Overview
 
@@ -1566,5 +1566,75 @@ for node in topo_order:
 - Repeated `backward()` calls on graphs with intermediate nodes produce mathematically correct accumulated leaf gradients.
 - Existing tests (leaf-only graphs) continue to pass unchanged.
 - No explicit `zero_grad()` method is needed for the core Value class (will be added in later stages for training).
+
+---
+
+## D35: Build Backend is setuptools.build_meta
+
+**Date:** Stage 12  
+**Status:** ACCEPTED
+
+### Decision
+
+Use `setuptools.build_meta` as the PEP 517 build backend.
+
+### Reasoning
+
+- Standard and well-supported across the Python ecosystem
+- Compatible with both `pip install .` and `pip install -e .`
+- Correctly handles `src/` layout with `[tool.setuptools.packages.find]`
+- The legacy `setuptools.backends._legacy:_Backend` was incorrectly specified in earlier pyproject.toml
+
+### Consequences
+
+- Builds work correctly in fresh environments
+- Wheel and sdist generation uses standard tooling
+
+---
+
+## D36: CLI via stdlib argparse
+
+**Date:** Stage 12  
+**Status:** ACCEPTED
+
+### Decision
+
+CLI is implemented using Python's stdlib `argparse`, with subcommands for `info` and `example`.
+
+### Reasoning
+
+- Zero external dependencies
+- Standard library, well-understood
+- Appropriate for a lightweight project with only 3 commands
+- No need for Typer/Click/Rich complexity
+
+### Consequences
+
+- CLI is simple, maintainable, and has no dependency footprint
+- `neuralearn --version`, `neuralearn info`, `neuralearn example` all work
+
+---
+
+## D37: Example Command Trains XOR In-Process
+
+**Date:** Stage 12  
+**Status:** ACCEPTED
+
+### Decision
+
+The `neuralearn example` command trains a tiny MLP on XOR directly in the CLI process.
+
+### Reasoning
+
+- Demonstrates the framework works end-to-end
+- No external data files needed
+- Deterministic (fixed architecture, epochs, seed not needed for XOR simplicity)
+- Fast (~2 seconds)
+- No GUI or file output required
+
+### Consequences
+
+- Users see immediate proof the framework works after install
+- No separate example scripts needed for basic demo
 
 ---

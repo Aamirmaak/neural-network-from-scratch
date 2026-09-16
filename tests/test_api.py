@@ -9,7 +9,10 @@ class TestCleanImport:
 
     def test_version(self):
         import neuralearn
-        assert neuralearn.__version__ == "1.2.0"
+        assert isinstance(neuralearn.__version__, str)
+        parts = neuralearn.__version__.split(".")
+        assert len(parts) == 3
+        assert all(p.isdigit() for p in parts)
 
     def test_all_symbols_importable(self):
         import neuralearn

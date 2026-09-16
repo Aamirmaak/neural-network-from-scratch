@@ -1,6 +1,6 @@
 # Project 001 — Neural Network From Scratch
 
-**Status:** Stage 11 Complete
+**Status:** Stage 12 Complete
 
 ## Overview
 
@@ -8,7 +8,7 @@ An educational deep-learning framework built from first principles to demonstrat
 
 This project implements a small but complete neural-network training system without using any existing deep-learning frameworks or automatic-differentiation libraries. The goal is to build strong AI/ML engineering fundamentals through real implementation work.
 
-**Current State:** Stage 11 Framework/API Polish complete. 488 tests passing. Clean public API with type hints, docstrings, and `pyproject.toml` for proper installation.
+**Current State:** Stage 12 Package Distribution + CLI complete. 507 tests passing. Installable via pip, CLI with `--version`, `info`, and `example` commands.
 
 ## Problem / Motivation
 
@@ -33,15 +33,20 @@ Building from scratch forces confrontation with every detail of the training mac
 ## Installation
 
 ```bash
-# Core framework (no dependencies)
+# Standard install
+pip install .
+
+# Development install (editable)
 pip install -e .
 
 # With visualization support
 pip install -e ".[viz]"
 
-# Development (pytest + matplotlib)
+# Full development (pytest + matplotlib)
 pip install -e ".[dev]"
 ```
+
+No external dependencies required for core functionality.
 
 ## Quick Start
 
@@ -87,6 +92,17 @@ trainer = Trainer(model, binary_cross_entropy, optimizer)
 history = trainer.fit(inputs, targets, epochs=500)
 
 print(f"Final loss: {history['loss'][-1]:.4f}")
+```
+
+## CLI
+
+After installation, the `neuralearn` command is available:
+
+```bash
+neuralearn --version    # print version
+neuralearn info         # project information
+neuralearn example      # run XOR training demo
+neuralearn --help       # usage help
 ```
 
 ## Intended Final System
@@ -202,16 +218,17 @@ plot_regression_fit(x_train, y_train, x_test, y_test, preds, target_fn=fn)
 
 matplotlib is an optional dependency — core framework works without it.
 
-## Testing Philosophy
+## Testing
 
-Correctness is established through:
+```bash
+# Run full test suite
+python -m pytest tests/ -q
 
-1. **Unit tests** for all arithmetic and gradient operations
-2. **Numerical gradient checking** via finite differences
-3. **Integration tests** for training flows
-4. **Regression tests** to prevent silent breakage
+# Run specific test file
+python -m pytest tests/test_cli.py -v
+```
 
-A demo running successfully is NOT sufficient evidence of correctness.
+507 tests covering all components: autodiff, layers, losses, optimizers, training, data, visualization, API smoke tests, and CLI.
 
 ## Reproducibility
 
@@ -257,7 +274,8 @@ neural-network-from-scratch/
 │       ├── training.py
 │       ├── datasets.py
 │       ├── dataloaders.py
-│       └── visualization.py
+│       ├── visualization.py
+│       └── cli.py
 ├── tests/
 ├── experiments/
 ├── artifacts/
@@ -311,22 +329,25 @@ from neuralearn import (
     plot_loss, plot_train_test_curve, plot_regression_fit,
     plot_xor_predictions, plot_comparison, plot_accuracy,
 )
+
+# CLI
+import subprocess
+subprocess.run(["neuralearn", "--version"])
 ```
 
 ## Current Milestone
 
-**Stage 11 — Framework/API Polish**
+**Stage 12 — Package Distribution + CLI**
 
-Stage 11 polishes the framework for external developers:
-- `pyproject.toml` for proper package installation
-- `gradient_check` exported from package root
-- Visualization functions lazy-loaded (no matplotlib dependency at import time)
-- Type hints added to visualization utilities
-- Dead code removed from visualization module
-- `Module.forward()` return type fixed (was incorrectly typed as `Value`)
-- `Value.__rpow__` added (`2 ** Value(3)` now works)
-- Unused imports cleaned up
-- 488 passing tests total
+Stage 12 turns the project into a proper installable Python package:
+- `pyproject.toml` with correct `setuptools.build_meta` backend
+- `pip install .` works from clean environment
+- `pip install -e .` works for development
+- CLI entry point: `neuralearn --version`, `neuralearn info`, `neuralearn example`
+- 12 new CLI tests (parser + subprocess)
+- 507 total tests passing
+- Clean build artifacts (sdist + wheel)
+- No new ML capabilities added
 
 ## Future Roadmap
 

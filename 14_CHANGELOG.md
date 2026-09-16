@@ -1,14 +1,29 @@
 # 14 — Changelog
 
 **Project:** Neural Network From Scratch  
-**Version:** 1.2  
-**Status:** Stage 11 COMPLETE
+**Version:** 1.3  
+**Status:** Stage 12 COMPLETE
 
 ## Overview
 
 This document records changes to the project.
 
 **Format:** Follows [Keep a Changelog](https://keepachangelog.com/) format.
+
+---
+
+## [1.3.0] — Stage 12 — Package Distribution + CLI
+
+### Added
+
+- `src/neuralearn/cli.py` — lightweight CLI with `--version`, `info`, `example` commands
+- `console_scripts` entry point: `neuralearn` command available after install
+- `tests/test_cli.py` — 12 CLI tests (parser + subprocess)
+- Build artifacts: source distribution and wheel
+
+### Fixed
+
+- `pyproject.toml` build backend corrected from `setuptools.backends._legacy:_Backend` to `setuptools.build_meta`
 
 ---
 

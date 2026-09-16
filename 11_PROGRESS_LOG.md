@@ -1,8 +1,8 @@
 # 11 — Progress Log
 
 **Project:** Neural Network From Scratch  
-**Version:** 1.2  
-**Status:** Stage 11 COMPLETE
+**Version:** 1.3  
+**Status:** Stage 12 COMPLETE
 
 ## Overview
 
@@ -352,6 +352,37 @@ This document tracks progress through the project stages.
 
 ---
 
+## Entry 007
+
+**Date:** 2026-09-16  
+**Stage:** Stage 12 — Package Distribution + CLI
+
+### Work Completed
+
+- Fixed `pyproject.toml` build backend (`setuptools.build_meta`)
+- Created `src/neuralearn/cli.py` — CLI with `--version`, `info`, `example` commands
+- Registered `console_scripts` entry point for `neuralearn` command
+- Created `tests/test_cli.py` — 12 CLI tests (parser + subprocess)
+- Verified clean install from `pip install .` in fresh virtual environment
+- Verified `neuralearn` CLI entry point works from installed package
+- Built source distribution and wheel
+- Installed from wheel and verified import + CLI
+- 507 tests passing (495 existing + 12 new)
+
+### Decisions
+
+- CLI uses stdlib `argparse` (no external dependencies)
+- Build backend is `setuptools.build_meta` (PEP 517 standard)
+- `example` command trains XOR in-process (deterministic, fast, no external data)
+- Version remains single-sourced in `__init__.py`, `pyproject.toml` reads from there via build
+
+### Next Step
+
+- Stage 12 implementation complete
+- Next stage: Stage 13 — Deployment / Demo
+
+---
+
 ## Stage Progress
 
 | Stage | Status | Start Date | End Date |
@@ -368,7 +399,7 @@ This document tracks progress through the project stages.
 | Stage 9 | COMPLETE (approved) | 2026-09-16 | 2026-09-16 |
 | Stage 10 | COMPLETE (approved) | 2026-09-16 | 2026-09-16 |
 | Stage 11 | COMPLETE | 2026-09-16 | 2026-09-16 |
-| Stage 12 | NOT STARTED | - | - |
+| Stage 12 | COMPLETE | 2026-09-16 | 2026-09-16 |
 | Stage 13 | NOT STARTED | - | - |
 | Stage 14 | NOT STARTED | - | - |
 
@@ -378,10 +409,10 @@ This document tracks progress through the project stages.
 
 | Metric | Value |
 |--------|-------|
-| Current Stage | 11 |
+| Current Stage | 12 |
 | Documentation Files | 15 |
-| Source Files | 12 |
-| Test Files | 11 |
+| Source Files | 13 |
+| Test Files | 12 |
 | Experiment Files | 3 |
-| Total Tests | 495 |
-| Tests Passed | 495 |
+| Total Tests | 507 |
+| Tests Passed | 507 |

@@ -25,7 +25,7 @@ Stage 8  — Dataset & DataLoader             ✓ COMPLETE
 Stage 9  — End-to-End Experiments           ✓ COMPLETE
 Stage 10 — Visualization & Experiment Analysis  ✓ COMPLETE
 Stage 11 — Framework/API Polish             ✓ COMPLETE
-Stage 12 — Packaging
+Stage 12 — Packaging + CLI                  ✓ COMPLETE
 Stage 13 — Reproducibility / Demonstration
 Stage 14 — Final Documentation and Portfolio Polish
 ```
@@ -578,41 +578,25 @@ Polish the framework for external developers: proper packaging, clean exports, t
 
 ---
 
-## Stage 12 — Packaging
+## Stage 12 — Packaging + CLI
 
-**Status:** PLANNED  
+**Status:** COMPLETE  
 **Dependencies:** All implementation stages
 
 ### Objective
 
-Package the project for distribution and reuse.
+Turn the project into a proper installable Python package and add a lightweight CLI.
 
 ### Major Work
 
-- Create setup.py or pyproject.toml
-- Create requirements.txt
-- Create installation documentation
-- Create example scripts
-
-### Expected Learning
-
-- How to package Python projects
-- How to document installation
-- How to create reusable examples
-
-### Acceptance Criteria
-
-- [ ] Project can be installed via pip
-- [ ] Requirements are documented
-- [ ] Installation instructions are clear
-- [ ] Examples work correctly
-
-### Expected Artifacts
-
-- `setup.py` or `pyproject.toml`
-- `requirements.txt`
-- Installation documentation
-- Example scripts
+- Fixed `pyproject.toml` build backend to `setuptools.build_meta`
+- Created `src/neuralearn/cli.py` with `--version`, `info`, `example` commands
+- Registered `console_scripts` entry point
+- Created `tests/test_cli.py` — 12 CLI tests
+- Verified clean install from `pip install .` in fresh environment
+- Built source distribution and wheel
+- Verified CLI works from installed package
+- 507 tests passing
 
 ---
 
